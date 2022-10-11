@@ -20,7 +20,6 @@ export const TheButton = (props) => {
 
   return (
     <button
-      onClick={props.action}
       className={`inline-flex items-center px-4 py-2 ${style} text-sm font-medium rounded-md ${
         props.isLoading && "opacity-25"
       }`}

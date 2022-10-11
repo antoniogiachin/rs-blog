@@ -7,6 +7,9 @@ import styles from "./RegisterForm.module.css";
 // * Import Components
 import { TheButton } from "../UI/TheButton";
 
+// * Import Hooks
+import { useAuth } from "../../hooks/useAuth";
+
 export const RegisterForm = ({ isLogin, changeFormType }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,8 +22,19 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Sending Form");
+    handleRegister({
+      name,
+      surname,
+      username,
+      email,
+      password,
+      isAuthor,
+      aka,
+      birthDate,
+    });
   };
+
+  const { isLoading, user, userData, errors, handleRegister } = useAuth();
 
   return (
     <form className="grid gap-4 grid-cols-2" onSubmit={handleSubmit}>
@@ -128,8 +142,14 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
         >
           Already registered?
         </span>
-        <TheButton label="Register" />
+        <TheButton label="Register" isLoading={isLoading} />
       </div>
+
+      {errors && (
+        <p className="text-red-500 uppercase col-span-2 text-right mt-2">
+          {errors}
+        </p>
+      )}
     </form>
   );
 };
