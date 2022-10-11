@@ -2,14 +2,18 @@ import { useState } from "react";
 import { TheButton } from "../UI/TheButton";
 // styles
 import "./LoginForm.css";
+// custom hooks
+import { useAuth } from "../../hooks/useAuth";
 
 export const LoginForm = ({ isLogin, changeFormType }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { isLoading, handleLogin, errors } = useAuth();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Sending Form");
+    handleLogin({ email, password });
   };
 
   return (
@@ -48,8 +52,17 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
         >
           {isLogin ? "Not Registered yet?" : "Already registered?"}
         </span>
-        <TheButton label={isLogin ? "Login" : "Register"} />
+        <TheButton
+          label={isLogin ? "Login" : "Register"}
+          isLoading={isLoading}
+        />
       </div>
+
+      {errors && (
+        <p className="text-red-500 uppercase col-span-2 text-right mt-2">
+          {errors}
+        </p>
+      )}
     </form>
   );
 };
