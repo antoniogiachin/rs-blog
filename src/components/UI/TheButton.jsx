@@ -1,4 +1,8 @@
+// * React Imports
 import { useMemo } from "react";
+// * Font Awasome
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const TheButton = (props) => {
   const style = useMemo(() => {
@@ -17,8 +21,13 @@ export const TheButton = (props) => {
   return (
     <button
       onClick={props.action}
-      className={`inline-flex items-center px-4 py-2 ${style} text-sm font-medium rounded-md`}
+      className={`inline-flex items-center px-4 py-2 ${style} text-sm font-medium rounded-md ${
+        props.isLoading && "opacity-25"
+      }`}
     >
+      {props.isLoading && (
+        <FontAwesomeIcon icon={faSpinner} className="mr-2 fa-spin" />
+      )}
       {props.label}
     </button>
   );
