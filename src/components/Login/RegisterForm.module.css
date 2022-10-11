@@ -1,0 +1,15 @@
+.ms_label {
+  display: flex;
+  flex-direction: column;
+}
+
+.ms_label span {
+  margin-bottom: 0.5rem;
+}
+
+.ms_label input {
+  padding: 0.5rem;
+  outline: none;
+  border-radius: 5px;
+  color: black;
+}

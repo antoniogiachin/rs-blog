@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { TheButton } from "../UI/TheButton";
 // styles
 import "./LoginForm.css";
 
-export const LoginForm = () => {
+export const LoginForm = ({ isLogin, changeFormType }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -39,6 +40,16 @@ export const LoginForm = () => {
           }}
         />
       </label>
+
+      <div className="flex items-center  justify-between space-x-2 mt-2">
+        <span
+          onClick={changeFormType}
+          className="hover:underline cursor-pointer text-xs"
+        >
+          {isLogin ? "Not Registered yet?" : "Already registered?"}
+        </span>
+        <TheButton label={isLogin ? "Login" : "Register"} />
+      </div>
     </form>
   );
 };
