@@ -36,8 +36,7 @@ function App() {
     };
   }, []);
 
-  // set redux
-
+  // set redux auth
   const retrieveAuthState = useMemo(
     () => JSON.parse(localStorage.getItem("auth")),
     [localStorage.getItem("auth")]

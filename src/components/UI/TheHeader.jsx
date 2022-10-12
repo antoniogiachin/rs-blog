@@ -55,9 +55,6 @@ export const TheHeader = () => {
               <span>Logout</span>
             </li>
           )}
-          {/* <li>
-            <NavLink to={"/"}></NavLink>
-          </li> */}
         </ul>
       </nav>
     </header>
