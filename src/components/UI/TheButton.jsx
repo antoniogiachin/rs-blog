@@ -20,12 +20,15 @@ export const TheButton = (props) => {
 
   return (
     <button
-      className={`inline-flex items-center px-4 py-2 ${style} text-sm font-medium rounded-md ${
-        props.isLoading && "opacity-25"
-      }`}
+      className={`inline-flex items-center px-4 py-2 ${style} ${
+        props.className
+      } text-sm font-medium rounded-md ${props.isLoading && "opacity-25"}`}
     >
       {props.isLoading && (
         <FontAwesomeIcon icon={faSpinner} className="mr-2 fa-spin" />
+      )}
+      {props.icon && !props.isLoading && (
+        <FontAwesomeIcon icon={props.icon} className="mr-2" />
       )}
       {props.label}
     </button>
