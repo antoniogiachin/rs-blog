@@ -1,5 +1,5 @@
 // * Imports React
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 // * Imports Styles
 import styles from "./RegisterForm.module.css";
@@ -11,18 +11,44 @@ import { TheButton } from "../UI/TheButton";
 import { useAuth } from "../../hooks/useAuth";
 
 export const RegisterForm = ({ isLogin, changeFormType }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // is auth hook
+  const { isLoading, user, userData, errors, setErrors, handleRegister } =
+    useAuth();
+
+  // regex email e password
+  const PWD_REGEX = /[0-9a-zA-Z]{6,}/;
+  const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+  const nameRef = useRef();
+
   const [name, setName] = useState("");
+
+  const [email, setEmail] = useState("");
+  const [isValidEmail, setIsValidEmail] = useState(false);
+
+  const [password, setPassword] = useState("");
+  const [isValidPassword, setIsValidPassword] = useState(false);
+
   const [surname, setSurname] = useState("");
   const [username, setUsername] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [isAuthor, setIsAuthor] = useState(false);
   const [aka, setAka] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleRegister({
+
+    if (!isValidPassword) {
+      setErrors("Password must be at least 6 character");
+      return;
+    }
+
+    if (!isValidEmail) {
+      setErrors("Please provide a valid email");
+      return;
+    }
+
+    await handleRegister({
       name,
       surname,
       username,
@@ -34,7 +60,34 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
     });
   };
 
-  const { isLoading, user, userData, errors, handleRegister } = useAuth();
+  // al [] focus su nameRef
+  useEffect(() => {
+    nameRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    const validation = EMAIL_REGEX.test(email);
+    if (validation && email) {
+      setIsValidEmail(true);
+    } else {
+      setIsValidEmail(false);
+    }
+  }, [email]);
+
+  useEffect(() => {
+    const validation = PWD_REGEX.test(password);
+    if (validation && password) {
+      setIsValidPassword(true);
+    } else {
+      setIsValidPassword(false);
+    }
+  }, [password]);
+
+  useEffect(() => {
+    if (!isAuthor) {
+      setAka("");
+    }
+  }, [isAuthor]);
 
   return (
     <form className="grid gap-4 grid-cols-2" onSubmit={handleSubmit}>
@@ -42,6 +95,7 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
       <label className={styles.ms_label}>
         <span>name: </span>
         <input
+          ref={nameRef}
           type="text"
           value={name}
           onChange={(e) => {
@@ -100,7 +154,6 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
           type="password"
           value={password}
           onChange={(e) => {
-            console.log(e);
             setPassword(e.target.value);
           }}
         />
@@ -142,7 +195,18 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
         >
           Already registered?
         </span>
-        <TheButton label="Register" isLoading={isLoading} />
+        <TheButton
+          disabled={
+            !name ||
+            !surname ||
+            !username ||
+            !isValidEmail ||
+            !isValidPassword ||
+            !birthDate
+          }
+          label="Register"
+          isLoading={isLoading}
+        />
       </div>
 
       {errors && (

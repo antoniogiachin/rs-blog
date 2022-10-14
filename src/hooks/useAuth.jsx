@@ -171,5 +171,12 @@ export const useAuth = () => {
     }
   };
 
-  return { handleRegister, handleLogin, handleLogout, isLoading, errors };
+  return {
+    handleRegister,
+    handleLogin,
+    handleLogout,
+    isLoading,
+    errors,
+    setErrors,
+  };
 };
