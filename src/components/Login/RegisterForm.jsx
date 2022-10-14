@@ -10,6 +10,10 @@ import { TheButton } from "../UI/TheButton";
 // * Import Hooks
 import { useAuth } from "../../hooks/useAuth";
 
+// * Import FontAwasome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+
 export const RegisterForm = ({ isLogin, changeFormType }) => {
   // is auth hook
   const { isLoading, user, userData, errors, setErrors, handleRegister } =
@@ -157,6 +161,12 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
             setPassword(e.target.value);
           }}
         />
+        <div className={!isValidPassword && password ? "block mt-2" : "hidden"}>
+          <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" />
+          <span>
+            Password must be at least 6 characters (letters, numbers or simbols)
+          </span>
+        </div>
       </label>
       {/* aka  */}
       {isAuthor && (
