@@ -1,20 +1,64 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+// * Import Components
 import { TheButton } from "../UI/TheButton";
+import { TheBadge } from "../UI/TheBadge";
+
 // styles
 import "./LoginForm.css";
 // custom hooks
 import { useAuth } from "../../hooks/useAuth";
 
 export const LoginForm = ({ isLogin, changeFormType }) => {
+  const { isLoading, handleLogin, errors, setErrors } = useAuth();
+
+  const emailRef = useRef();
+
   const [email, setEmail] = useState("");
+  const [isValidEmail, setIsValidEmail] = useState(false);
+
   const [password, setPassword] = useState("");
+  const [isValidPassword, setIsValidPassword] = useState(false);
 
-  const { isLoading, handleLogin, errors } = useAuth();
+  // regex email e password
+  const PWD_REGEX = /[0-9a-zA-Z]{6,}/;
+  const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleLogin({ email, password });
+    if (!isValidPassword) {
+      setErrors("Password must be at least 6 character");
+      return;
+    }
+
+    if (!isValidEmail) {
+      setErrors("Please provide a valid email");
+      return;
+    }
+
+    await handleLogin({ email, password });
   };
+
+  useEffect(() => {
+    emailRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    const validation = EMAIL_REGEX.test(email);
+    if (validation && email) {
+      setIsValidEmail(true);
+    } else {
+      setIsValidEmail(false);
+    }
+  }, [email]);
+
+  useEffect(() => {
+    const validation = PWD_REGEX.test(password);
+    if (validation && password) {
+      setIsValidPassword(true);
+    } else {
+      setIsValidPassword(false);
+    }
+  }, [password]);
 
   return (
     <form
@@ -25,6 +69,7 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
       <label className="ms_label">
         <span>email: </span>
         <input
+          ref={emailRef}
           type="email"
           value={email}
           onChange={(e) => {
@@ -53,15 +98,16 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
           {isLogin ? "Not Registered yet?" : "Already registered?"}
         </span>
         <TheButton
-          label={isLogin ? "Login" : "Register"}
+          disabled={!isValidEmail || !isValidPassword}
+          label="Login"
           isLoading={isLoading}
         />
       </div>
 
       {errors && (
-        <p className="text-red-500 uppercase col-span-2 text-right mt-2">
-          {errors}
-        </p>
+        <div className="col-span-1 col-start-2  mt-2">
+          <TheBadge label={errors} severity={"danger"} />
+        </div>
       )}
     </form>
   );
