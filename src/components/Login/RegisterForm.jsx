@@ -6,6 +6,7 @@ import styles from "./RegisterForm.module.css";
 
 // * Import Components
 import { TheButton } from "../UI/TheButton";
+import { TheBadge } from "../UI/TheBadge";
 
 // * Import Hooks
 import { useAuth } from "../../hooks/useAuth";
@@ -220,9 +221,9 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
       </div>
 
       {errors && (
-        <p className="text-red-500 uppercase col-span-2 text-right mt-2">
-          {errors}
-        </p>
+        <div className="col-span-1 col-start-2  mt-2">
+          <TheBadge label={errors} severity={"danger"} />
+        </div>
       )}
     </form>
   );
