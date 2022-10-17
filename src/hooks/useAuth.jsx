@@ -1,5 +1,9 @@
 // * Import Supabase
 import { supabase } from "../supabase/supabaseClient";
+// * Import axios
+import axios from "../api/axios";
+const LOGIN_URL = "/auth";
+const LOGOUT_URL = "/auth/logout";
 // * React Imports
 import { useState, useEffect } from "react";
 // * Redux Imports
@@ -8,6 +12,7 @@ import {
   SET_IS_LOGGED,
   SET_IS_AUTHOR,
   SET_USER_INFOS,
+  SET_TOKEN,
 } from "../store/slicers/authSlice";
 // * Router Imports
 import { useNavigate } from "react-router-dom";
@@ -89,85 +94,55 @@ export const useAuth = () => {
   const handleLogin = async (payload) => {
     try {
       setIsLoading(true);
-      let res = await supabase.auth.signInWithPassword({
-        email: payload.email,
-        password: payload.password,
-      });
+      let res = await axios.post(
+        LOGIN_URL,
+        {
+          email: payload.email,
+          password: payload.password,
+        },
+        { withCredentials: true }
+      );
 
-      if (res.error) {
-        setIsLoading(false);
-        throw res.error;
-      }
-
-      let resFetchUser = await supabase
-        .from("users")
-        .select("*")
-        .eq("email", payload.email);
-
-      if (resFetchUser.error) {
-        setIsLoading(false);
-        throw res.error;
-      }
-
-      console.log(res, resFetchUser);
-
-      const authData = {
-        email: res.data.user.email === payload.email ? payload.email : null,
-        isAuthenticated: res.data.user.aud,
-        idAuth: res.data.user.id,
-        accessToken: res.data.session.access_token,
-        refreshToken: res.data.session.refresh_token,
-      };
-
-      let userPayload = {
-        name: resFetchUser.data[0].name,
-        surname: resFetchUser.data[0].surname,
-        username: resFetchUser.data[0].username,
-        email: resFetchUser.data[0].email,
-        birthDate: resFetchUser.data[0].birthDate,
-        isAuthor: resFetchUser.data[0].isAuthor,
-        aka: resFetchUser.data[0].aka,
-      };
-
-      let dataToStore = { ...authData, valid: false };
-      if (res.data.user.aud === "authenticated") {
-        dataToStore = { ...authData, ...userPayload, valid: true };
-      }
-
-      localStorage.setItem("auth", JSON.stringify(dataToStore));
-      if (dataToStore.valid) {
-        dispatch(SET_IS_LOGGED(dataToStore));
-        dispatch(SET_IS_AUTHOR(payload.isAuthor));
-      }
-      dispatch(SET_USER_INFOS({ ...dataToStore }));
+      dispatch(SET_TOKEN(res.data.accessToken));
+      dispatch(SET_USER_INFOS({ ...res.data.user }));
+      dispatch(SET_TOKEN(res.data.user.isAuthor));
+      dispatch(SET_IS_LOGGED(res.data.success));
       navigate("/");
 
       setIsLoading(false);
     } catch (e) {
-      setErrors(e);
+      setIsLoading(false);
+      if (!e.response) {
+        setErrors("Check your internet connection!");
+      } else {
+        setErrors(e.response.data.message);
+      }
     }
   };
 
   const handleLogout = async () => {
     try {
       setIsLoading(true);
-      let { error } = await supabase.auth.signOut();
+      const res = await axios.post(LOGOUT_URL, {
+        withCredentials: true,
+      });
 
-      if (error) {
-        setIsLoading(false);
-        throw error;
-      }
-
-      localStorage.removeItem("auth");
+      console.log(res);
+      
       dispatch(SET_IS_LOGGED(false));
       dispatch(SET_IS_AUTHOR(false));
       dispatch(SET_USER_INFOS({}));
+      dispatch(SET_TOKEN(null));
       navigate("/");
 
       setIsLoading(false);
     } catch (e) {
-      setErrors(e);
       setIsLoading(false);
+      if (!e.response) {
+        setErrors("Check your internet connection!");
+      } else {
+        setErrors(e.response.data.message);
+      }
     }
   };
 

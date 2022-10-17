@@ -4,18 +4,22 @@ import { useState, useEffect, useRef, useMemo } from "react";
 // styles
 import "./App.css";
 // redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   SET_USER_INFOS,
   SET_IS_LOGGED,
   SET_IS_AUTHOR,
 } from "./store/slicers/authSlice";
+import { useRefreshToken } from "./hooks/useRefreshToken";
 
 function App() {
   // show navbar handle
   const positionY = useRef(0);
   const [navbarVisible, setNavbarvisible] = useState(true);
   const dispatch = useDispatch();
+  const isLogged = useSelector((state) => state.auth.isLogged);
+  const token = useSelector((state) => state.auth.token);
+  const { refresh } = useRefreshToken();
 
   const handleScroll = () => {
     if (window.scrollY > positionY.current) {
@@ -36,17 +40,17 @@ function App() {
     };
   }, []);
 
-  // set redux auth
-  const retrieveAuthState = useMemo(
-    () => JSON.parse(localStorage.getItem("auth")),
-    [localStorage.getItem("auth")]
-  );
-
   useEffect(() => {
-    if (retrieveAuthState && retrieveAuthState.valid) {
-      dispatch(SET_IS_LOGGED(true));
-      dispatch(SET_IS_AUTHOR(retrieveAuthState.isAuthor));
-      dispatch(SET_USER_INFOS({ ...retrieveAuthState }));
+    const persistLogin = async () => {
+      try {
+        await refresh();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (!isLogged || !token) {
+      persistLogin();
     }
   }, []);
 

@@ -5,6 +5,8 @@ import App from "./App";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
+// ROUTE PROTECTOR
+import { RouteProtector } from "./pages/RouteProtector";
 // ERROR PAGE
 import { ErrorPage } from "./pages/ErrorPage";
 
@@ -24,7 +26,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: <RouteProtector toRender={<Dashboard />} />,
       },
     ],
   },

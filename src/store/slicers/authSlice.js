@@ -6,6 +6,7 @@ export const authSlice = createSlice({
     isLogged: false,
     isAuthor: false,
     userInfos: {},
+    token: null,
   },
   reducers: {
     SET_IS_LOGGED: (state, action) => {
@@ -17,10 +18,13 @@ export const authSlice = createSlice({
     SET_USER_INFOS: (state, action) => {
       state.userInfos = { ...action.payload };
     },
+    SET_TOKEN: (state, action) => {
+      state.token = action.payload;
+    },
   },
 });
 
-export const { SET_IS_LOGGED, SET_IS_AUTHOR, SET_USER_INFOS } =
+export const { SET_IS_LOGGED, SET_IS_AUTHOR, SET_USER_INFOS, SET_TOKEN } =
   authSlice.actions;
 
 export default authSlice.reducer;
