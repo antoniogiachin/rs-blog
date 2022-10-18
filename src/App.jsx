@@ -1,26 +1,47 @@
 import { Outlet } from "react-router-dom";
 import { TheHeader } from "./components/UI/TheHeader";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 // styles
 import "./App.css";
 // redux
 import { useDispatch, useSelector } from "react-redux";
+// redux auth
 import {
-  SET_USER_INFOS,
-  SET_IS_LOGGED,
-  SET_IS_AUTHOR,
+  authorStatus,
+  userInfosBatch,
+  tokenAvalable,
+  loginStatus,
 } from "./store/slicers/authSlice";
+// redux posts
+import {
+  selectAllPosts,
+  selectPostsStatus,
+  selectPostsError,
+  fetchPosts,
+} from "./store/slicers/postsSlice";
+// custom hooks
 import { useRefreshToken } from "./hooks/useRefreshToken";
 
 function App() {
+  const dispatch = useDispatch();
+
   // show navbar handle
   const positionY = useRef(0);
   const [navbarVisible, setNavbarvisible] = useState(true);
-  const dispatch = useDispatch();
-  const isLogged = useSelector((state) => state.auth.isLogged);
-  const token = useSelector((state) => state.auth.token);
+
+  // selectors auth redux
+  const isLogged = useSelector(loginStatus);
+  const token = useSelector(tokenAvalable);
+
+  // selectors posts redux
+  const posts = useSelector(selectAllPosts);
+  const postsStatus = useSelector(selectPostsStatus);
+  const postsError = useSelector(selectPostsError);
+
+  // custom hooks
   const { refresh } = useRefreshToken();
 
+  // handle navbar
   const handleScroll = () => {
     if (window.scrollY > positionY.current) {
       positionY.current = window.scrollY;
@@ -40,12 +61,19 @@ function App() {
     };
   }, []);
 
+  // handle fetch posts
+  useEffect(() => {
+    if (postsStatus === "idle") {
+      dispatch(fetchPosts());
+    }
+  }, [postsStatus, dispatch]);
+
   useEffect(() => {
     const persistLogin = async () => {
       try {
         await refresh();
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       }
     };
 

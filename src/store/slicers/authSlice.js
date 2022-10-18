@@ -24,6 +24,11 @@ export const authSlice = createSlice({
   },
 });
 
+export const loginStatus = (state) => state.auth.isLogged;
+export const authorStatus = (state) => state.auth.isAuthor;
+export const userInfosBatch = (state) => state.auth.userInfos;
+export const tokenAvalable = (state) => state.auth.token;
+
 export const { SET_IS_LOGGED, SET_IS_AUTHOR, SET_USER_INFOS, SET_TOKEN } =
   authSlice.actions;
 
