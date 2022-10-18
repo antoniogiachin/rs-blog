@@ -4,7 +4,6 @@ import { TheButton } from "../UI/TheButton";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { faBlog } from "@fortawesome/free-solid-svg-icons";
 import { faMessage } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 export const DashboardActions = ({ handleSwitchButton, toShow }) => {
   return (
