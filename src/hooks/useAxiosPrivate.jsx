@@ -1,19 +1,25 @@
 // interceptors
 import { axiosPrivate } from "../api/axios";
-import { useRefreshToken } from "./useRefreshToken";
+// import { useRefreshToken } from "./useRefreshToken";
 import { useEffect } from "react";
 // * Redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  authStatus,
+  tokenAvalable,
+  handleRefresh,
+} from "../store/slicers/authSlice";
 
 export const useAxiosPrivate = () => {
-  const { refresh } = useRefreshToken();
-  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const auth = useSelector(authStatus);
+  const token = useSelector(tokenAvalable);
 
   useEffect(() => {
     const requestIntercept = axiosPrivate.interceptors.request.use(
       (config) => {
         if (!config.headers["Authorization"]) {
-          config.headers["Authorization"] = `Bearer ${auth.token}`;
+          config.headers["Authorization"] = `Bearer ${token}`;
         }
 
         return config;
@@ -29,8 +35,8 @@ export const useAxiosPrivate = () => {
         const prevRequest = error?.config;
         if (error?.response?.status === 403 && !prevRequest.sent) {
           prevRequest.sent = true;
-          const newAccessToken = await refresh();
-          prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          dispatch(handleRefresh());
+          prevRequest.headers["Authorization"] = `Bearer ${token}`;
           return axiosPrivate(prevRequest);
         }
 
@@ -42,7 +48,7 @@ export const useAxiosPrivate = () => {
       axiosPrivate.interceptors.request.eject(responseIntercept);
       axiosPrivate.interceptors.response.eject(requestIntercept);
     };
-  }, [auth, refresh]);
+  }, [auth, handleRefresh]);
 
   return { axiosPrivate };
 };

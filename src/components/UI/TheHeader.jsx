@@ -1,5 +1,5 @@
 // router
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 // fontawasome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +19,15 @@ export const TheHeader = () => {
   const isLogged = useSelector(loginStatus);
   const error = useSelector(authErrorBatch);
   const isLoading = useSelector(authStatus);
+
+  const navigate = useNavigate();
+
+  const doHandleLogout = async () => {
+    const { payload } = await dispatch(handleLogout());
+    if (payload.success) {
+      navigate("/login");
+    }
+  };
 
   const dispatch = useDispatch();
 
@@ -51,9 +60,7 @@ export const TheHeader = () => {
           )}
           {isLogged && (
             <li
-              onClick={() => {
-                dispatch(handleLogout());
-              }}
+              onClick={doHandleLogout}
               className={`flex space-x-2 items-center cursor-pointer ${
                 isLoading && "opacity-25"
               }`}

@@ -76,6 +76,9 @@ export const authSlice = createSlice({
     SET_ERROR: (state, action) => {
       state.error = action.payload;
     },
+    SET_IS_LOADING: (state, action) => {
+      state.isLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -152,6 +155,7 @@ export const {
   SET_USER_INFOS,
   SET_TOKEN,
   SET_ERROR,
+  SET_IS_LOADING
 } = authSlice.actions;
 
 export default authSlice.reducer;

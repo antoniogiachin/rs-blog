@@ -1,6 +1,9 @@
 // * Imports React
 import { useState, useRef, useEffect } from "react";
 
+// * Import React Router
+import { useNavigate } from "react-router-dom";
+
 // * Imports Styles
 import styles from "./RegisterForm.module.css";
 
@@ -9,16 +12,32 @@ import { TheButton } from "../UI/TheButton";
 import { TheBadge } from "../UI/TheBadge";
 
 // * Import Hooks
-import { useAuth } from "../../hooks/useAuth";
+import { useRegister } from "../../hooks/useRegister";
+
+// * Import Redux
+import { useDispatch, useSelector } from "react-redux";
+import {
+  SET_ERROR,
+  authStatus,
+  authErrorBatch,
+  SET_IS_LOADING,
+} from "../../store/slicers/authSlice";
 
 // * Import FontAwasome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 export const RegisterForm = ({ isLogin, changeFormType }) => {
-  // is auth hook
-  const { isLoading, user, userData, errors, setErrors, handleRegister } =
-    useAuth();
+  // hook
+  const { handleRegister } = useRegister();
+
+  //navigate
+  const navigate = useNavigate();
+
+  // redux
+  const dispatch = useDispatch();
+  const isLoading = useSelector(authStatus);
+  const error = useSelector(authErrorBatch);
 
   // regex email e password
   const PWD_REGEX = /[0-9a-zA-Z]{6,}/;
@@ -44,25 +63,30 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
     e.preventDefault();
 
     if (!isValidPassword) {
-      setErrors("Password must be at least 6 character");
+      dispatch(SET_ERROR("Password must be at least 6 character"));
       return;
     }
 
     if (!isValidEmail) {
-      setErrors("Please provide a valid email");
+      dispatch(SET_ERROR("Please provide a valid email"));
       return;
     }
 
-    await handleRegister({
+    const res = await handleRegister({
       name,
       surname,
       username,
       email,
       password,
       isAuthor,
-      aka,
       birthDate,
     });
+
+    if (res.success) {
+      navigate("/");
+    } else {
+      SET_IS_LOADING(false);
+    }
   };
 
   // al [] focus su nameRef
@@ -93,6 +117,14 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
       setAka("");
     }
   }, [isAuthor]);
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        dispatch(SET_ERROR(null));
+      }, 2000);
+    }
+  }, [error]);
 
   return (
     <form className="grid gap-4 grid-cols-2" onSubmit={handleSubmit}>
@@ -220,9 +252,9 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
         />
       </div>
 
-      {errors && (
+      {error && (
         <div className="col-span-1 col-start-2  mt-2">
-          <TheBadge label={errors} severity={"danger"} />
+          <TheBadge label={error} severity={"danger"} />
         </div>
       )}
     </form>

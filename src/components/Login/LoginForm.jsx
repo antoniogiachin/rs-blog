@@ -9,7 +9,6 @@ import { TheBadge } from "../UI/TheBadge";
 import { useDispatch, useSelector } from "react-redux";
 import {
   handleLogin,
-  handleLogout,
   authStatus,
   authErrorBatch,
   SET_ERROR,
@@ -50,7 +49,8 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
       return;
     }
 
-    dispatch(handleLogin({ email, password }));
+    const { payload } = await dispatch(handleLogin({ email, password }));
+    if (payload.success) navigate("/");
   };
 
   useEffect(() => {
