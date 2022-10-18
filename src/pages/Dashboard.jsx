@@ -1,8 +1,11 @@
 // * Import React
-import { useState } from "react";
+import { useState, useMemo } from "react";
 // * Import Components
 import { DashboardActions } from "../components/Dashoboard/DashboardActions";
 import { DashboardDisplay } from "../components/Dashoboard/DashboardDisplay";
+// * Import FontAwasome
+import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Dashboard = () => {
   const show = {
@@ -32,12 +35,32 @@ export const Dashboard = () => {
     }
   };
 
+  const resetShow = () => {
+    setToShow({ ...show });
+  };
+
+  const isChanged = useMemo(() => {
+    return JSON.stringify(show) !== JSON.stringify(toShow);
+  }, [toShow]);
+
   return (
     <div>
       <DashboardActions
         toShow={toShow}
         handleSwitchButton={handleSwitchButton}
       />
+      {isChanged && (
+        <div
+          onClick={resetShow}
+          className="flex justify-end p-2 cursor-pointer"
+        >
+          <FontAwesomeIcon
+            icon={faXmarkCircle}
+            className="text-red-400 p-2 shadow-lg bg-slate-100 rounded flex space-x-2 "
+          />
+        </div>
+      )}
+
       <DashboardDisplay />
     </div>
   );
