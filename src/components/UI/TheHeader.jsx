@@ -55,7 +55,7 @@ export const TheHeader = () => {
           )}
           {isLogged && (
             <li>
-              <NavLink to={"/dashboard"}>Dashoboard</NavLink>
+              <NavLink to={"/dashboard"}>Dashboard</NavLink>
             </li>
           )}
           {isLogged && (
