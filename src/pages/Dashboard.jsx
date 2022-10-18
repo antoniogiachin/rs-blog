@@ -10,15 +10,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useFetcher } from "react-router-dom";
 // Redux
 import { useSelector } from "react-redux";
-import { selectAllPosts } from "../store/slicers/postsSlice";
-import { userInfosBatch } from "../store/slicers/authSlice";
+import { userPostsBatch } from "../store/slicers/authSlice";
 
 export const Dashboard = () => {
   const show = {
-    profile: false,
-    edit: true,
-    posts: true,
-    reviews: true,
+    edit: false,
+    posts: false,
+    reviews: false,
   };
 
   const [toShow, setToShow] = useState(show);
@@ -26,56 +24,44 @@ export const Dashboard = () => {
 
   const { handleFetch, isLoading, error } = useFetcher();
 
-  const userEmail = useSelector(userInfosBatch).email;
-  const allPosts = useSelector(selectAllPosts);
+  const allUserPosts = useSelector(userPostsBatch);
 
   const handleSwitchButton = async (selection) => {
     console.log(selection);
     switch (selection) {
       case "edit":
-        setToShow({ ...show, profile: true, edit: false });
+        setToShow({ ...show, edit: true });
         return;
       case "posts":
-        const res = allPosts.filter((post) => post.author.id === userEmail);
-        setContentToShow(res);
-        setToShow({ ...show, profile: true, posts: false });
+        setContentToShow(allUserPosts);
+        setToShow({ ...show, posts: true });
         return;
       case "reviews":
-        setToShow({ ...show, profile: true, reviews: false });
-        return;
-      case "profile":
-        setToShow({ ...show, profile: false, edit: true });
+        setToShow({ ...show, reviews: true });
         return;
     }
   };
 
-  const resetShow = () => {
+  const isChanged = useMemo(() => {
+    return Object.values(toShow).some((val) => val === true);
+  }, [toShow]);
+
+  const resetToShow = () => {
     setToShow({ ...show });
   };
-
-  const isChanged = useMemo(() => {
-    return JSON.stringify(show) !== JSON.stringify(toShow);
-  }, [toShow]);
 
   return (
     <div>
       <DashboardActions
-        toShow={toShow}
         handleSwitchButton={handleSwitchButton}
+        toShow={toShow}
       />
-      {isChanged && (
-        <div
-          onClick={resetShow}
-          className="flex justify-end p-2 cursor-pointer"
-        >
-          <FontAwesomeIcon
-            icon={faXmarkCircle}
-            className="text-red-400 p-2 shadow-lg bg-slate-100 rounded flex space-x-2 "
-          />
-        </div>
-      )}
 
-      <DashboardDisplay contentToShow={contentToShow} />
+      <DashboardDisplay
+        isChanged={isChanged}
+        toShow={toShow}
+        resetToShow={resetToShow}
+      />
     </div>
   );
 };

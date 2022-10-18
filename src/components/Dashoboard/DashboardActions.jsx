@@ -6,50 +6,36 @@ import { faBlog } from "@fortawesome/free-solid-svg-icons";
 import { faMessage } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
-
-export const DashboardActions = ({ toShow, handleSwitchButton }) => {
+export const DashboardActions = ({ handleSwitchButton, toShow }) => {
   return (
-    <div className="p-2 shadow-lg bg-slate-100 rounded flex space-x-2  ">
-      {toShow.profile && (
-        <TheButton
-          functionToExecute={() => {
-            handleSwitchButton("profile");
-          }}
-          className="grow flex justify-center"
-          label="Profile"
-          icon={faUser}
-        />
-      )}
-      {toShow.edit && (
-        <TheButton
-          functionToExecute={() => {
-            handleSwitchButton("edit");
-          }}
-          className="grow flex justify-center"
-          label="Edit your profile"
-          icon={faPen}
-        />
-      )}
-      {toShow.posts && (
-        <TheButton
-          functionToExecute={() => {
-            handleSwitchButton("posts");
-          }}
-          className="grow flex justify-center"
-          label="See your posts"
-          icon={faBlog}
-        />
-      )}
-      {toShow.reviews && (
-        <TheButton
-          functionToExecute={() => {
-            handleSwitchButton("reviews");
-          }}
-          className="grow flex justify-center"
-          label="Answer Reviews"
-          icon={faMessage}
-        />
-      )}
+    <div className="p-2 shadow-lg bg-slate-100 rounded flex flex-col space-y-2 md:space-x-2 md:space-y-0 md:flex-row  ">
+      <TheButton
+        functionToExecute={() => {
+          handleSwitchButton("edit");
+        }}
+        className="md:grow flex justify-center"
+        label="Edit your profile"
+        icon={faPen}
+        type={toShow.edit && "success"}
+      />
+      <TheButton
+        functionToExecute={() => {
+          handleSwitchButton("posts");
+        }}
+        className="md:grow flex justify-center"
+        label="See your posts"
+        icon={faBlog}
+        type={toShow.posts && "success"}
+      />
+      <TheButton
+        functionToExecute={() => {
+          handleSwitchButton("reviews");
+        }}
+        className="md:grow flex justify-center"
+        label="Answer Reviews"
+        icon={faMessage}
+        type={toShow.reviews && "success"}
+      />
     </div>
   );
 };
