@@ -7,8 +7,11 @@ import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 // redux auth
 import {
+  SET_USER_POSTS,
   tokenAvalable,
   loginStatus,
+  authorStatus,
+  userInfosBatch,
   handleRefresh,
 } from "./store/slicers/authSlice";
 // redux posts
@@ -18,10 +21,12 @@ import {
   selectPostsError,
   fetchPosts,
 } from "./store/slicers/postsSlice";
-
+// custom hooks
+import { useAxiosPrivate } from "./hooks/useAxiosPrivate";
 
 function App() {
   const dispatch = useDispatch();
+  const axiosPrivate = useAxiosPrivate();
 
   // show navbar handle
   const positionY = useRef(0);
@@ -29,7 +34,9 @@ function App() {
 
   // selectors auth redux
   const isLogged = useSelector(loginStatus);
+  const isAuthor = useSelector(authorStatus);
   const token = useSelector(tokenAvalable);
+  const userInfos = useSelector(userInfosBatch);
 
   // selectors posts redux
   const posts = useSelector(selectAllPosts);
@@ -76,6 +83,20 @@ function App() {
       persistLogin();
     }
   }, []);
+
+  useEffect(() => {
+    if (userInfos && isAuthor) {
+      // fetch users posts
+      const handleFetchUserPosts = async () => {
+        const userPosts = await axiosPrivate.get(
+          `/posts/user/${userInfos.email}`
+        );
+        dispatch(SET_USER_POSTS(userPosts));
+      };
+
+      handleFetchUserPosts();
+    }
+  }, [isAuthor, userInfos]);
 
   return (
     <>

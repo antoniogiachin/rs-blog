@@ -49,5 +49,5 @@ export const useAxiosPrivate = () => {
     };
   }, [auth, handleRefresh]);
 
-  return { axiosPrivate };
+  return axiosPrivate;
 };

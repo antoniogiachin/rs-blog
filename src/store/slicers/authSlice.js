@@ -59,6 +59,7 @@ export const authSlice = createSlice({
     token: null,
     isLoading: false, // => idle || loading || succeeded || failed
     error: null,
+    userPosts: [],
   },
   reducers: {
     SET_IS_LOGGED: (state, action) => {
@@ -78,6 +79,9 @@ export const authSlice = createSlice({
     },
     SET_IS_LOADING: (state, action) => {
       state.isLoading = action.payload;
+    },
+    SET_USER_POSTS: (state, action) => {
+      state.userPosts = [...action.payload];
     },
   },
   extraReducers: (builder) => {
@@ -145,6 +149,7 @@ export const authSlice = createSlice({
 export const loginStatus = (state) => state.auth.isLogged;
 export const authorStatus = (state) => state.auth.isAuthor;
 export const userInfosBatch = (state) => state.auth.userInfos;
+export const userPostsBatch = (state) => state.auth.userPosts;
 export const authErrorBatch = (state) => state.auth.error;
 export const authStatus = (state) => state.auth.isLoading;
 export const tokenAvalable = (state) => state.auth.token;
@@ -155,7 +160,8 @@ export const {
   SET_USER_INFOS,
   SET_TOKEN,
   SET_ERROR,
-  SET_IS_LOADING
+  SET_IS_LOADING,
+  SET_USER_POSTS,
 } = authSlice.actions;
 
 export default authSlice.reducer;
