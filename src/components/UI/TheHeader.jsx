@@ -39,7 +39,7 @@ export const TheHeader = () => {
           <li>
             <NavLink className="flex items-center space-x-2" to={"/"}>
               <FontAwesomeIcon icon={faWandMagicSparkles} />
-              <span>Supabase Blog!</span>
+              <span>Tonino's blog!</span>
             </NavLink>
           </li>
         </ul>

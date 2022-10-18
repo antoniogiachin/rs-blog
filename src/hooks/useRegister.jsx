@@ -8,7 +8,7 @@ import {
   SET_ERROR,
   SET_IS_LOADING,
 } from "../store/slicers/authSlice";
-import { useEffect } from "react";
+
 
 export const useRegister = () => {
   const dispatch = useDispatch();
