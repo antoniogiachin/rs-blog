@@ -79,7 +79,7 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
     if (error) {
       setTimeout(() => {
         dispatch(SET_ERROR(null));
-      }, 2000);
+      }, 5000);
     }
   }, [error]);
 
