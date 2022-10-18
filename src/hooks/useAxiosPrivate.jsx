@@ -1,6 +1,5 @@
 // interceptors
 import { axiosPrivate } from "../api/axios";
-// import { useRefreshToken } from "./useRefreshToken";
 import { useEffect } from "react";
 // * Redux
 import { useSelector, useDispatch } from "react-redux";
