@@ -6,6 +6,12 @@ import { DashboardDisplay } from "../components/Dashoboard/DashboardDisplay";
 // * Import FontAwasome
 import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// * Import custom Hooks
+import { useFetcher } from "react-router-dom";
+// Redux
+import { useSelector } from "react-redux";
+import { selectAllPosts } from "../store/slicers/postsSlice";
+import { userInfosBatch } from "../store/slicers/authSlice";
 
 export const Dashboard = () => {
   const show = {
@@ -16,14 +22,22 @@ export const Dashboard = () => {
   };
 
   const [toShow, setToShow] = useState(show);
+  const [contentToShow, setContentToShow] = useState(null);
 
-  const handleSwitchButton = (selection) => {
+  const { handleFetch, isLoading, error } = useFetcher();
+
+  const userEmail = useSelector(userInfosBatch).email;
+  const allPosts = useSelector(selectAllPosts);
+
+  const handleSwitchButton = async (selection) => {
     console.log(selection);
     switch (selection) {
       case "edit":
         setToShow({ ...show, profile: true, edit: false });
         return;
       case "posts":
+        const res = allPosts.filter((post) => post.author.id === userEmail);
+        setContentToShow(res);
         setToShow({ ...show, profile: true, posts: false });
         return;
       case "reviews":
@@ -61,7 +75,7 @@ export const Dashboard = () => {
         </div>
       )}
 
-      <DashboardDisplay />
+      <DashboardDisplay contentToShow={contentToShow} />
     </div>
   );
 };

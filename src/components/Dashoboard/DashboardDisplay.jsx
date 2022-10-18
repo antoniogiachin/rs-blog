@@ -1,3 +1,3 @@
-export const DashboardDisplay = () => {
-  return <div>DashboardDisplay</div>;
+export const DashboardDisplay = ({ contentToShow }) => {
+  return <div>{contentToShow}</div>;
 };
