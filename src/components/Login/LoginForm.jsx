@@ -1,15 +1,30 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 // * Import Components
 import { TheButton } from "../UI/TheButton";
 import { TheBadge } from "../UI/TheBadge";
 
+// * Import Redux
+import { useDispatch, useSelector } from "react-redux";
+import {
+  handleLogin,
+  handleLogout,
+  authStatus,
+  authErrorBatch,
+  SET_ERROR,
+} from "../../store/slicers/authSlice";
+
 // styles
 import "./LoginForm.css";
-// custom hooks
-import { useAuth } from "../../hooks/useAuth";
 
 export const LoginForm = ({ isLogin, changeFormType }) => {
-  const { isLoading, handleLogin, errors, setErrors } = useAuth();
+  const navigate = useNavigate();
+
+  // redux
+  const dispatch = useDispatch();
+  const error = useSelector(authErrorBatch);
+  const isLoading = useSelector(authStatus);
 
   const emailRef = useRef();
 
@@ -26,16 +41,16 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isValidPassword) {
-      setErrors("Password must be at least 6 character");
+      dispatch(SET_ERROR("Password must be at least 6 character"));
       return;
     }
 
     if (!isValidEmail) {
-      setErrors("Please provide a valid email");
+      dispatch(SET_ERROR("Please provide a valid email"));
       return;
     }
 
-    await handleLogin({ email, password });
+    dispatch(handleLogin({ email, password }));
   };
 
   useEffect(() => {
@@ -59,6 +74,14 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
       setIsValidPassword(false);
     }
   }, [password]);
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        dispatch(SET_ERROR(null));
+      }, 2000);
+    }
+  }, [error]);
 
   return (
     <form
@@ -84,7 +107,6 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
           type="password"
           value={password}
           onChange={(e) => {
-            console.log(e);
             setPassword(e.target.value);
           }}
         />
@@ -104,9 +126,9 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
         />
       </div>
 
-      {errors && (
+      {error && (
         <div className="col-span-1 col-start-2  mt-2">
-          <TheBadge label={errors} severity={"danger"} />
+          <TheBadge label={error} severity={"danger"} />
         </div>
       )}
     </form>

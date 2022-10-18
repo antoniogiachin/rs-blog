@@ -7,10 +7,9 @@ import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 // redux auth
 import {
-  authorStatus,
-  userInfosBatch,
   tokenAvalable,
   loginStatus,
+  handleRefresh,
 } from "./store/slicers/authSlice";
 // redux posts
 import {
@@ -19,8 +18,7 @@ import {
   selectPostsError,
   fetchPosts,
 } from "./store/slicers/postsSlice";
-// custom hooks
-import { useRefreshToken } from "./hooks/useRefreshToken";
+
 
 function App() {
   const dispatch = useDispatch();
@@ -37,9 +35,6 @@ function App() {
   const posts = useSelector(selectAllPosts);
   const postsStatus = useSelector(selectPostsStatus);
   const postsError = useSelector(selectPostsError);
-
-  // custom hooks
-  const { refresh } = useRefreshToken();
 
   // handle navbar
   const handleScroll = () => {
@@ -71,7 +66,7 @@ function App() {
   useEffect(() => {
     const persistLogin = async () => {
       try {
-        await refresh();
+        dispatch(handleRefresh());
       } catch (err) {
         // console.error(err);
       }

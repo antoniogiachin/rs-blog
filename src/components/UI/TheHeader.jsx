@@ -4,16 +4,23 @@ import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 // redux
-import { useSelector } from "react-redux";
-// custom hooks
-import { useAuth } from "../../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  loginStatus,
+  handleLogout,
+  authErrorBatch,
+  authStatus,
+} from "../../store/slicers/authSlice";
+
 // vfont awasome
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 export const TheHeader = () => {
-  const isLogged = useSelector((state) => state.auth.isLogged);
+  const isLogged = useSelector(loginStatus);
+  const error = useSelector(authErrorBatch);
+  const isLoading = useSelector(authStatus);
 
-  const { isLoading, handleLogout, errors } = useAuth();
+  const dispatch = useDispatch();
 
   return (
     <header className="fixed top-0 w-full">
@@ -44,7 +51,9 @@ export const TheHeader = () => {
           )}
           {isLogged && (
             <li
-              onClick={handleLogout}
+              onClick={() => {
+                dispatch(handleLogout());
+              }}
               className={`flex space-x-2 items-center cursor-pointer ${
                 isLoading && "opacity-25"
               }`}
