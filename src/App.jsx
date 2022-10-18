@@ -91,7 +91,7 @@ function App() {
         const userPosts = await axiosPrivate.get(
           `/posts/user/${userInfos.email}`
         );
-        dispatch(SET_USER_POSTS(userPosts));
+        dispatch(SET_USER_POSTS([...userPosts.data.data]));
       };
 
       handleFetchUserPosts();
