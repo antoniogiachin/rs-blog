@@ -11,6 +11,11 @@ export const DashboardUserRecap = () => {
   return (
     <div className="p-2 shadow-lg bg-slate-100 rounded grid grid-cols-4 gap-y-3 mt-6">
       <div className="col-span-4 md:col-span-3">
+        {userInfos.profilePicture && (
+          <img
+            src={`${import.meta.env.VITE_BASE_URL}/${userInfos.profilePicture}`}
+          />
+        )}
         <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <h3 className="text-2xl">Username: {userInfos.username}</h3>
           <h3 className="text-2xl">Email: {userInfos.email}</h3>
