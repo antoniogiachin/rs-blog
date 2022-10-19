@@ -57,7 +57,7 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
   const [username, setUsername] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [isAuthor, setIsAuthor] = useState(false);
-  const [aka, setAka] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,9 +80,10 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
       password,
       isAuthor,
       birthDate,
+      profilePicture,
     });
 
-    if (res.success) {
+    if (res && res.success) {
       navigate("/");
     } else {
       SET_IS_LOADING(false);
@@ -111,12 +112,6 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
       setIsValidPassword(false);
     }
   }, [password]);
-
-  useEffect(() => {
-    if (!isAuthor) {
-      setAka("");
-    }
-  }, [isAuthor]);
 
   useEffect(() => {
     if (error) {
@@ -201,25 +196,18 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
           </span>
         </div>
       </label>
-      {/* aka  */}
-      {isAuthor && (
-        <label className={styles.ms_label}>
-          <span>aka: </span>
-          <input
-            type="text"
-            value={aka}
-            onChange={(e) => {
-              setAka(e.target.value);
-            }}
-          />
-        </label>
-      )}
+      {/* profilePicture  */}
+      <label className="flex items-center justify-between  space-x-3">
+        <span>profile picture: </span>
+        <input
+          type="file"
+          onChange={(e) => {
+            setProfilePicture(e.target.files[0]);
+          }}
+        />
+      </label>
       {/* author checkbox  */}
-      <label
-        className={`${
-          !isAuthor ? "col-span-2 items-center" : "items-end"
-        } flex space-x-5 justify-end `}
-      >
+      <label className="flex items-center justify-end  space-x-3">
         <span>Are you an author? </span>
         <input
           type="checkbox"

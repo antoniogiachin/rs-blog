@@ -9,14 +9,21 @@ import {
   SET_IS_LOADING,
 } from "../store/slicers/authSlice";
 
-
 export const useRegister = () => {
   const dispatch = useDispatch();
 
   const handleRegister = async (payload) => {
     dispatch(SET_IS_LOADING(true));
+    const form = new FormData();
+    for (const [key, val] of Object.entries(payload)) {
+      if (key === "profilePicture") {
+        form.append(key, val, val.name);
+      } else {
+        form.append(key, val);
+      }
+    }
     try {
-      await axios.post(REGISTER_URL, { ...payload });
+      await axios.post(REGISTER_URL, form);
       dispatch(SET_IS_LOADING(false));
       const res = await dispatch(
         handleLogin({ email: payload.email, password: payload.password })
