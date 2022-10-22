@@ -120,6 +120,7 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
           {isLogin ? "Not Registered yet?" : "Already registered?"}
         </span>
         <TheButton
+          functionToExecute={handleSubmit}
           disabled={!isValidEmail || !isValidPassword}
           label="Login"
           isLoading={isLoading}

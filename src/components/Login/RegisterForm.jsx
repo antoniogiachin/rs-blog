@@ -237,6 +237,7 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
           }
           label="Register"
           isLoading={isLoading}
+          functionToExecute={handleSubmit}
         />
       </div>
 
