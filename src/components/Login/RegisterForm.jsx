@@ -122,7 +122,7 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
   }, [error]);
 
   return (
-    <form className="grid gap-4 grid-cols-2" onSubmit={handleSubmit}>
+    <form className="grid gap-4 grid-cols-2" >
       {/* name  */}
       <label className={styles.ms_label}>
         <span>name: </span>

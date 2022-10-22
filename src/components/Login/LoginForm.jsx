@@ -84,10 +84,7 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
   }, [error]);
 
   return (
-    <form
-      className="flex flex-col space-y-3 item-center justify-center"
-      onSubmit={handleSubmit}
-    >
+    <form className="flex flex-col space-y-3 item-center justify-center">
       {/* email  */}
       <label className="ms_label">
         <span>email: </span>
