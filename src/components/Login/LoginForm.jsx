@@ -7,12 +7,13 @@ import { TheBadge } from "../UI/TheBadge";
 
 // * Import Redux
 import { useDispatch, useSelector } from "react-redux";
-import {
-  handleLogin,
-  authStatus,
-  authErrorBatch,
-  SET_ERROR,
-} from "../../store/slicers/authSlice";
+// import {
+//   handleLogin,
+//   authStatus,
+//   authErrorBatch,
+//   SET_ERROR,
+// } from "../../store/slicers/authSlice";
+import { useLoginMutation } from "../../api/modules/authApiSlice";
 
 // styles
 import "./LoginForm.css";
@@ -22,8 +23,9 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
 
   // redux
   const dispatch = useDispatch();
-  const error = useSelector(authErrorBatch);
-  const isLoading = useSelector(authStatus);
+  const [login, { isLoading, error }] = useLoginMutation();
+  // const error = useSelector(authErrorBatch);
+  // const isLoading = useSelector(authStatus);
 
   const emailRef = useRef();
 
@@ -49,8 +51,12 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
       return;
     }
 
-    const { payload } = await dispatch(handleLogin({ email, password }));
-    if (payload.success) navigate("/");
+    try {
+      const { success } = await login({ email, password });
+      if (success) navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -120,6 +126,8 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
           {isLogin ? "Not Registered yet?" : "Already registered?"}
         </span>
         <TheButton
+          isButton={false}
+          functionToExecute={handleSubmit}
           disabled={!isValidEmail || !isValidPassword}
           label="Login"
           isLoading={isLoading}

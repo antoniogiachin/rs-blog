@@ -18,25 +18,50 @@ export const TheButton = (props) => {
     }
   }, [props.type]);
 
-  return (
-    <button
-      onClick={props.functionToExecute}
-      disabled={props.disabled || props.isLoading}
-      className={`inline-flex items-center px-4 py-2 ${style} ${
-        props.className
-      } text-sm font-medium rounded-md ${
-        props.isLoading || props.disabled ? "opacity-25" : ""
-      }`}
-    >
-      {props.isLoading && (
-        <FontAwesomeIcon icon={faSpinner} className="mr-2 fa-spin" />
-      )}
-      {props.icon && !props.isLoading && (
-        <FontAwesomeIcon icon={props.icon} className="mr-2" />
-      )}
-      {props.label}
-    </button>
-  );
+  let button;
+  if (props.isButton) {
+    button = (
+      <button
+        type="button"
+        disabled={props.disabled || props.isLoading}
+        className={`inline-flex items-center px-4 py-2 ${style} ${
+          props.className
+        } text-sm font-medium rounded-md ${
+          props.isLoading || props.disabled ? "opacity-25" : ""
+        }`}
+      >
+        {props.isLoading && (
+          <FontAwesomeIcon icon={faSpinner} className="mr-2 fa-spin" />
+        )}
+        {props.icon && !props.isLoading && (
+          <FontAwesomeIcon icon={props.icon} className="mr-2" />
+        )}
+        {props.label}
+      </button>
+    );
+  } else {
+    button = (
+      <button
+        onClick={props.functionToExecute}
+        disabled={props.disabled || props.isLoading}
+        className={`inline-flex items-center px-4 py-2 ${style} ${
+          props.className
+        } text-sm font-medium rounded-md ${
+          props.isLoading || props.disabled ? "opacity-25" : ""
+        }`}
+      >
+        {props.isLoading && (
+          <FontAwesomeIcon icon={faSpinner} className="mr-2 fa-spin" />
+        )}
+        {props.icon && !props.isLoading && (
+          <FontAwesomeIcon icon={props.icon} className="mr-2" />
+        )}
+        {props.label}
+      </button>
+    );
+  }
+
+  return <>{button}</>;
 };
 
 TheButton.defaultProps = {
@@ -44,4 +69,5 @@ TheButton.defaultProps = {
   functionToExecute: () => {
     console.log("OK");
   },
+  isButton: true,
 };
