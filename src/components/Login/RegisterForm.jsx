@@ -211,7 +211,7 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
         <span>Are you an author? </span>
         <input
           type="checkbox"
-          value={isAuthor}
+          checked={isAuthor}
           onChange={(e) => {
             console.log(e.target.value);
             setIsAuthor((prevState) => !prevState);

@@ -30,7 +30,7 @@ export const DashboardUserRecap = () => {
         </div>
       </div>
       {userInfos.isAuthor && (
-        <div className="col-span-4 md:col-span-1 flex items-center space-x-2 md:space-x-0 md:justify-center">
+        <div className="col-span-4 md:col-span-1 flex items-center space-x-2 md:space-x-0 md:justify-center md:relative">
           <FontAwesomeIcon
             className="fa-2xl text-green-400 opacity-80"
             icon={faCircleCheck}
