@@ -84,7 +84,10 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
   }, [error]);
 
   return (
-    <form className="flex flex-col space-y-3 item-center justify-center">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col space-y-3 item-center justify-center"
+    >
       {/* email  */}
       <label className="ms_label">
         <span>email: </span>
@@ -117,7 +120,6 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
           {isLogin ? "Not Registered yet?" : "Already registered?"}
         </span>
         <TheButton
-          functionToExecute={handleSubmit}
           disabled={!isValidEmail || !isValidPassword}
           label="Login"
           isLoading={isLoading}

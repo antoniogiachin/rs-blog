@@ -20,6 +20,7 @@ export const TheButton = (props) => {
 
   return (
     <button
+      type={props.functionToExecute ? "button" : "submit"}
       onClick={props.functionToExecute}
       disabled={props.disabled || props.isLoading}
       className={`inline-flex items-center px-4 py-2 ${style} ${
@@ -41,7 +42,4 @@ export const TheButton = (props) => {
 
 TheButton.defaultProps = {
   label: "Please provide a label",
-  functionToExecute: () => {
-    console.log("OK");
-  },
 };
