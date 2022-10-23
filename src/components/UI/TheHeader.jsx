@@ -41,7 +41,7 @@ export const TheHeader = () => {
 
   return (
     <header className="fixed top-0 w-full">
-      <nav className="flex justify-between items-center bg-slate-400 px-6 h-12 shadow-lg">
+      <nav className="flex justify-between items-center bg-slate-800 px-6 h-12 shadow-lg text-slate-100 font-bold">
         {/* left  */}
         <ul>
           <li>
