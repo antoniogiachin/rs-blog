@@ -1,3 +1,5 @@
+// * Import Custom components
+import { TheLoader } from "./components/UI/TheLoader";
 import { Outlet } from "react-router-dom";
 import { TheHeader } from "./components/UI/TheHeader";
 import { useState, useEffect, useRef } from "react";
@@ -9,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // redux auth
 import {
-  SET_USER_POSTS,
   SET_IS_LOGGED,
   SET_IS_AUTHOR,
   SET_USER_INFOS,
@@ -37,13 +38,9 @@ import {
   useLazyGetAllUserPostsQuery,
 } from "./api/modules/postApiSlice";
 
-// custom hooks
-import { useAxiosPrivate } from "./hooks/useAxiosPrivate";
-import { TheLoader } from "./components/UI/TheLoader";
-
 function App() {
   const dispatch = useDispatch();
-  const axiosPrivate = useAxiosPrivate();
+
   // router
   const navigate = useNavigate();
 

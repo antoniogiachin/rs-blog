@@ -1,17 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-// chiamata async per fetch all posts
-import axios from "../../api/axios";
-const POST_URL = "/posts";
-
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  try {
-    const res = await axios.get(POST_URL);
-    return res.data; // sara' action.payload
-  } catch (e) {
-    return e.message;
-  }
-});
+import { createSlice } from "@reduxjs/toolkit";
 
 const resetState = {
   posts: [],
@@ -36,26 +23,6 @@ const postsSlice = createSlice({
         state[key] = resetState[key];
       }
     },
-  },
-  // handling delle chiamate thunk (usa un oggetto builder, gestisce tre casi pending, fullfilled, error)
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchPosts.pending, (state, action) => {
-        state.status = "loading";
-      })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
-        if (typeof action.payload === "string") {
-          state.status = "failed";
-          state.error = action.payload;
-        } else {
-          state.status = "succeeded";
-          state.posts = [...state.posts, ...action.payload.data];
-        }
-      })
-      .addCase(fetchPosts.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      });
   },
 });
 

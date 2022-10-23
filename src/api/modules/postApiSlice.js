@@ -31,7 +31,7 @@ export const postApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log(data);
+
           dispatch(SET_USER_POSTS([...data.data]));
         } catch (err) {
           console.log(err);
