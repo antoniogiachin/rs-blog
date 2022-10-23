@@ -1,19 +1,24 @@
-// axios
-import axios from "../api/axios";
-const REGISTER_URL = "/users";
 // redux
 import { useDispatch } from "react-redux";
+import { useRegisterMutation } from "../api/modules/userApiSlice";
+import { useLoginMutation } from "../api/modules/authApiSlice";
 import {
-  handleLogin,
-  SET_ERROR,
-  SET_IS_LOADING,
+  SET_IS_LOGGED,
+  SET_IS_AUTHOR,
+  SET_USER_INFOS,
+  SET_TOKEN,
+  RESET,
 } from "../store/slicers/authSlice";
+import { SET_ERROR, RESET_ERROR } from "../store/slicers/errorSlice";
 
 export const useRegister = () => {
   const dispatch = useDispatch();
 
+  // redux query
+  const [register, { isLoading }] = useRegisterMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+
   const handleRegister = async (payload) => {
-    dispatch(SET_IS_LOADING(true));
     const form = new FormData();
     for (const [key, val] of Object.entries(payload)) {
       if (key === "profilePicture") {
@@ -23,17 +28,26 @@ export const useRegister = () => {
       }
     }
     try {
-      await axios.post(REGISTER_URL, form);
-      dispatch(SET_IS_LOADING(false));
-      const res = await dispatch(
-        handleLogin({ email: payload.email, password: payload.password })
-      );
+      await register(form);
+
+      const res = await login({
+        email: payload.email,
+        password: payload.password,
+      });
+      dispatch(SET_IS_LOGGED(res.success));
+      dispatch(SET_IS_AUTHOR(res.user.isAuthor));
+      dispatch(SET_USER_INFOS({ ...res.user }));
+      dispatch(SET_TOKEN(res.accessToken));
+      navigate("/");
 
       return res.payload;
     } catch (e) {
-      dispatch(SET_IS_LOADING(false));
-      dispatch(SET_ERROR(e.response.data));
-      return e.code;
+      dispatch(
+        SET_ERROR({ status: err.data.status, message: err.data.message })
+      );
+      setTimeout(() => {
+        dispatch(RESET_ERROR({}));
+      }, 5000);
     }
   };
   return { handleRegister };

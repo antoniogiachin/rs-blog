@@ -16,28 +16,34 @@ import { useRegister } from "../../hooks/useRegister";
 
 // * Import Redux
 import { useDispatch, useSelector } from "react-redux";
+import { useRegisterMutation } from "../../api/modules/userApiSlice";
+import { useLoginMutation } from "../../api/modules/authApiSlice";
+import {
+  SET_IS_LOGGED,
+  SET_IS_AUTHOR,
+  SET_USER_INFOS,
+  SET_TOKEN,
+  RESET,
+} from "../../store/slicers/authSlice";
 import {
   SET_ERROR,
-  authStatus,
-  authErrorBatch,
-  SET_IS_LOADING,
-} from "../../store/slicers/authSlice";
+  RESET_ERROR,
+  errorMessage,
+} from "../../store/slicers/errorSlice";
 
 // * Import FontAwasome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
-export const RegisterForm = ({ isLogin, changeFormType }) => {
-  // hook
-  const { handleRegister } = useRegister();
-
+export const RegisterForm = ({ changeFormType }) => {
   //navigate
   const navigate = useNavigate();
 
   // redux
   const dispatch = useDispatch();
-  const isLoading = useSelector(authStatus);
-  const error = useSelector(authErrorBatch);
+  const error = useSelector(errorMessage);
+  const [register, { isLoading }] = useRegisterMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
 
   // regex email e password
   const PWD_REGEX = /[0-9a-zA-Z]{6,}/;
@@ -72,21 +78,48 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
       return;
     }
 
-    const res = await handleRegister({
+    const payload = {
       name,
       surname,
       username,
       email,
       password,
-      isAuthor,
       birthDate,
+      isAuthor,
       profilePicture,
-    });
+    };
 
-    if (res && res.success) {
+    const form = new FormData();
+    for (const [key, val] of Object.entries(payload)) {
+      if (key === "profilePicture") {
+        form.append(key, val, val.name);
+      } else {
+        form.append(key, val);
+      }
+    }
+
+    try {
+      const reg = await register(form).unwrap();
+      console.log(reg, form);
+      const res = await login({
+        email: payload.email,
+        password: payload.password,
+      }).unwrap();
+
+      console.log(res);
+      dispatch(SET_IS_LOGGED(res.success));
+      dispatch(SET_IS_AUTHOR(res.user.isAuthor));
+      dispatch(SET_USER_INFOS({ ...res.user }));
+      dispatch(SET_TOKEN(res.accessToken));
       navigate("/");
-    } else {
-      SET_IS_LOADING(false);
+    } catch (err) {
+      console.log(err);
+      dispatch(
+        SET_ERROR({ status: err.data.status, message: err.data.message })
+      );
+      setTimeout(() => {
+        dispatch(RESET_ERROR({}));
+      }, 5000);
     }
   };
 
@@ -236,7 +269,7 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
             !birthDate
           }
           label="Register"
-          isLoading={isLoading}
+          isLoading={isLoading || isLoginLoading}
         />
       </div>
 

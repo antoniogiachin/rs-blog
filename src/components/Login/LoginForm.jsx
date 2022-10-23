@@ -7,12 +7,18 @@ import { TheBadge } from "../UI/TheBadge";
 
 // * Import Redux
 import { useDispatch, useSelector } from "react-redux";
-// import {
-//   handleLogin,
-//   authStatus,
-//   authErrorBatch,
-//   SET_ERROR,
-// } from "../../store/slicers/authSlice";
+import {
+  errorMessage,
+  RESET_ERROR,
+  SET_ERROR,
+} from "../../store/slicers/errorSlice";
+import {
+  SET_IS_LOGGED,
+  SET_IS_AUTHOR,
+  SET_USER_INFOS,
+  SET_TOKEN,
+  RESET,
+} from "../../store/slicers/authSlice";
 import { useLoginMutation } from "../../api/modules/authApiSlice";
 
 // styles
@@ -22,10 +28,9 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
   const navigate = useNavigate();
 
   // redux
+  const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
-  const [login, { isLoading, error }] = useLoginMutation();
-  // const error = useSelector(authErrorBatch);
-  // const isLoading = useSelector(authStatus);
+  const error = useSelector(errorMessage);
 
   const emailRef = useRef();
 
@@ -41,6 +46,7 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!isValidPassword) {
       dispatch(SET_ERROR("Password must be at least 6 character"));
       return;
@@ -52,10 +58,20 @@ export const LoginForm = ({ isLogin, changeFormType }) => {
     }
 
     try {
-      const { success } = await login({ email, password });
-      if (success) navigate("/");
+      const res = await login({ email, password }).unwrap();
+
+      dispatch(SET_IS_LOGGED(res.success));
+      dispatch(SET_IS_AUTHOR(res.user.isAuthor));
+      dispatch(SET_USER_INFOS({ ...res.user }));
+      dispatch(SET_TOKEN(res.accessToken));
+      navigate("/");
     } catch (err) {
-      console.log(err);
+      dispatch(
+        SET_ERROR({ status: err.data.status, message: err.data.message })
+      );
+      setTimeout(() => {
+        dispatch(RESET_ERROR({}));
+      }, 5000);
     }
   };
 
