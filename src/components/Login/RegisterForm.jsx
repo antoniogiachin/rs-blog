@@ -155,7 +155,7 @@ export const RegisterForm = ({ changeFormType }) => {
   }, [error]);
 
   return (
-    <form className="grid gap-4 grid-cols-2" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-2">
       {/* name  */}
       <label className={styles.ms_label}>
         <span>name: </span>
