@@ -129,7 +129,7 @@ function App() {
     content = <TheLoader />;
   } else {
     content = (
-      <div className="ms_container mt-12 overflow-auto bg-purple-400">
+      <div className="ms_container mt-12 overflow-auto bg-purple-300">
         <div className="container mx-auto p-5">
           <Outlet />
         </div>

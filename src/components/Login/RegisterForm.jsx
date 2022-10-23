@@ -83,8 +83,11 @@ export const RegisterForm = ({ changeFormType }) => {
       password,
       birthDate,
       isAuthor,
-      profilePicture,
     };
+
+    if (profilePicture) {
+      payload.profilePicture = profilePicture;
+    }
 
     const form = new FormData();
     for (const [key, val] of Object.entries(payload)) {
