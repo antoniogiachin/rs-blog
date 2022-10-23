@@ -215,7 +215,6 @@ export const EditUserForm = () => {
           type="checkbox"
           value={isAuthor}
           onChange={(e) => {
-            console.log(e.target.value);
             setIsAuthor((prevState) => !prevState);
           }}
         />

@@ -4,32 +4,40 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 // redux
+import { useLogoutMutation } from "../../api/modules/authApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loginStatus,
-  handleLogout,
-  authErrorBatch,
-  authStatus,
+  RESET,
+  // handleLogout,
+  // authErrorBatch,
+  // authStatus,
 } from "../../store/slicers/authSlice";
 
 // vfont awasome
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { RESET_ERROR, SET_ERROR } from "../../store/slicers/errorSlice";
 
 export const TheHeader = () => {
+  // * Redux
   const isLogged = useSelector(loginStatus);
-  const error = useSelector(authErrorBatch);
-  const isLoading = useSelector(authStatus);
+  const [logout, { isLoading }] = useLogoutMutation();
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
   const doHandleLogout = async () => {
-    const { payload } = await dispatch(handleLogout());
-    if (payload.success) {
+    try {
+      await logout().unwrap();
+      dispatch(RESET());
       navigate("/login");
+    } catch (err) {
+      SET_ERROR({ message: err.data.message, status: err.data.status });
+      setTimeout(() => {
+        RESET_ERROR();
+      }, 5000);
     }
   };
-
-  const dispatch = useDispatch();
 
   return (
     <header className="fixed top-0 w-full">
