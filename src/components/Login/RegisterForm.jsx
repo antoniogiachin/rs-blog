@@ -100,20 +100,17 @@ export const RegisterForm = ({ changeFormType }) => {
 
     try {
       const reg = await register(form).unwrap();
-      console.log(reg, form);
       const res = await login({
         email: payload.email,
         password: payload.password,
       }).unwrap();
 
-      console.log(res);
       dispatch(SET_IS_LOGGED(res.success));
       dispatch(SET_IS_AUTHOR(res.user.isAuthor));
       dispatch(SET_USER_INFOS({ ...res.user }));
       dispatch(SET_TOKEN(res.accessToken));
       navigate("/");
     } catch (err) {
-      console.log(err);
       dispatch(
         SET_ERROR({ status: err.data.status, message: err.data.message })
       );
@@ -246,7 +243,6 @@ export const RegisterForm = ({ changeFormType }) => {
           type="checkbox"
           value={isAuthor}
           onChange={(e) => {
-            console.log(e.target.value);
             setIsAuthor((prevState) => !prevState);
           }}
         />

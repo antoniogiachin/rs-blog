@@ -93,14 +93,12 @@ function App() {
     const persistLogin = async () => {
       try {
         const res = await refresh().unwrap();
-        console.log(res);
         dispatch(SET_IS_LOGGED(res.success));
         dispatch(SET_IS_AUTHOR(res.user.isAuthor));
         dispatch(SET_USER_INFOS({ ...res.user }));
         dispatch(SET_TOKEN(res.accessToken));
       } catch (err) {
         if (err.status === 401) {
-          console.log("SIAMO code!");
           await logout();
           dispatch(RESET());
           navigate("/login");

@@ -19,7 +19,6 @@ export const postApiSlice = apiSlice.injectEndpoints({
 
         try {
           const { data } = await queryFulfilled;
-          console.log(data);
           dispatch(SET_POSTS([...data.data]));
           dispatch(SET_POST_FETCH_STATUS("succeeded"));
         } catch (err) {
