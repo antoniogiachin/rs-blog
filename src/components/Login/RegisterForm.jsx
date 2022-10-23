@@ -11,9 +11,6 @@ import styles from "./RegisterForm.module.css";
 import { TheButton } from "../UI/TheButton";
 import { TheBadge } from "../UI/TheBadge";
 
-// * Import Hooks
-import { useRegister } from "../../hooks/useRegister";
-
 // * Import Redux
 import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../../api/modules/userApiSlice";
