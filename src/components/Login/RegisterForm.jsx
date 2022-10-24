@@ -1,5 +1,5 @@
 // * Imports React
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 // * Import React Router
 import { useNavigate } from "react-router-dom";
@@ -11,33 +11,36 @@ import styles from "./RegisterForm.module.css";
 import { TheButton } from "../UI/TheButton";
 import { TheBadge } from "../UI/TheBadge";
 
-// * Import Hooks
-import { useRegister } from "../../hooks/useRegister";
-
 // * Import Redux
 import { useDispatch, useSelector } from "react-redux";
+import { useRegisterMutation } from "../../api/modules/userApiSlice";
+import { useLoginMutation } from "../../api/modules/authApiSlice";
+import {
+  SET_IS_LOGGED,
+  SET_IS_AUTHOR,
+  SET_USER_INFOS,
+  SET_TOKEN,
+  RESET,
+} from "../../store/slicers/authSlice";
 import {
   SET_ERROR,
-  authStatus,
-  authErrorBatch,
-  SET_IS_LOADING,
-} from "../../store/slicers/authSlice";
+  RESET_ERROR,
+  errorMessage,
+} from "../../store/slicers/errorSlice";
 
 // * Import FontAwasome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
-export const RegisterForm = ({ isLogin, changeFormType }) => {
-  // hook
-  const { handleRegister } = useRegister();
-
+export const RegisterForm = ({ changeFormType }) => {
   //navigate
   const navigate = useNavigate();
 
   // redux
   const dispatch = useDispatch();
-  const isLoading = useSelector(authStatus);
-  const error = useSelector(authErrorBatch);
+  const error = useSelector(errorMessage);
+  const [register, { isLoading }] = useRegisterMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
 
   // regex email e password
   const PWD_REGEX = /[0-9a-zA-Z]{6,}/;
@@ -59,34 +62,92 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
   const [isAuthor, setIsAuthor] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
 
+  const subtractYears = useCallback((numOfYears, date = new Date()) => {
+    date.setFullYear(date.getFullYear() - numOfYears);
+    return date;
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const minYear = subtractYears(100);
+    const ratedR = subtractYears(18);
+
+    if (
+      new Date(birthDate) < minYear ||
+      new Date(birthDate) > new Date() ||
+      new Date(birthDate) > ratedR
+    ) {
+      setBirthDate("");
+      dispatch(
+        SET_ERROR({
+          status: 400,
+          message:
+            "Invalid date! (You should be born, not dead and also an adult!)",
+        })
+      );
+      return;
+    }
+
     if (!isValidPassword) {
-      dispatch(SET_ERROR("Password must be at least 6 character"));
+      dispatch(
+        SET_ERROR({
+          status: 400,
+          message: "Password must be at least 6 character",
+        })
+      );
       return;
     }
 
     if (!isValidEmail) {
-      dispatch(SET_ERROR("Please provide a valid email"));
+      dispatch(
+        SET_ERROR({ status: 400, message: "Please provide a valid email" })
+      );
       return;
     }
 
-    const res = await handleRegister({
+    const payload = {
       name,
       surname,
       username,
       email,
       password,
-      isAuthor,
       birthDate,
-      profilePicture,
-    });
+      isAuthor,
+    };
 
-    if (res && res.success) {
+    if (profilePicture) {
+      payload.profilePicture = profilePicture;
+    }
+
+    const form = new FormData();
+    for (const [key, val] of Object.entries(payload)) {
+      if (key === "profilePicture") {
+        form.append(key, val, val.name);
+      } else {
+        form.append(key, val);
+      }
+    }
+
+    try {
+      const reg = await register(form).unwrap();
+      const res = await login({
+        email: payload.email,
+        password: payload.password,
+      }).unwrap();
+
+      dispatch(SET_IS_LOGGED(res.success));
+      dispatch(SET_IS_AUTHOR(res.user.isAuthor));
+      dispatch(SET_USER_INFOS({ ...res.user }));
+      dispatch(SET_TOKEN(res.accessToken));
       navigate("/");
-    } else {
-      SET_IS_LOADING(false);
+    } catch (err) {
+      dispatch(
+        SET_ERROR({ status: err.data.status, message: err.data.message })
+      );
+      setTimeout(() => {
+        dispatch(RESET_ERROR({}));
+      }, 5000);
     }
   };
 
@@ -116,13 +177,13 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
   useEffect(() => {
     if (error) {
       setTimeout(() => {
-        dispatch(SET_ERROR(null));
+        dispatch(RESET_ERROR());
       }, 5000);
     }
   }, [error]);
 
   return (
-    <form className="grid gap-4 grid-cols-2" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-2">
       {/* name  */}
       <label className={styles.ms_label}>
         <span>name: </span>
@@ -213,7 +274,6 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
           type="checkbox"
           checked={isAuthor}
           onChange={(e) => {
-            console.log(e.target.value);
             setIsAuthor((prevState) => !prevState);
           }}
         />
@@ -236,7 +296,7 @@ export const RegisterForm = ({ isLogin, changeFormType }) => {
             !birthDate
           }
           label="Register"
-          isLoading={isLoading}
+          isLoading={isLoading || isLoginLoading}
         />
       </div>
 

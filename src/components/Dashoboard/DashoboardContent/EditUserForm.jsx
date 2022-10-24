@@ -11,14 +11,27 @@ import styles from "../../Login/RegisterForm.module.css";
 import { TheButton } from "../../UI/TheButton";
 import { TheBadge } from "../../UI/TheBadge";
 
+// * Import Hooks
+// import { useRegister } from "../../hooks/useRegister";
+
 // * Import Redux
 import { useDispatch, useSelector } from "react-redux";
+// import {
+//   SET_ERROR,
+//   authStatus,
+//   authErrorBatch,
+//   SET_IS_LOADING,
+// } from "../../store/slicers/authSlice";
 import { userInfosBatch } from "../../../store/slicers/authSlice";
 
 // * Import FontAwasome
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 export const EditUserForm = () => {
+  // hook
+  // const { handleRegister } = useRegister();
+
   //navigate
   const navigate = useNavigate();
 
@@ -29,7 +42,7 @@ export const EditUserForm = () => {
   const userInfos = useSelector(userInfosBatch);
 
   // regex email e password
-  // const PWD_REGEX = /[0-9a-zA-Z]{6,}/;
+  const PWD_REGEX = /[0-9a-zA-Z]{6,}/;
   const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
   const nameRef = useRef();
@@ -39,8 +52,8 @@ export const EditUserForm = () => {
   const [email, setEmail] = useState(userInfos.email);
   const [isValidEmail, setIsValidEmail] = useState(false);
 
-  // const [password, setPassword] = useState(userInfos.password);
-  // const [isValidPassword, setIsValidPassword] = useState(false);
+  const [password, setPassword] = useState(userInfos.password);
+  const [isValidPassword, setIsValidPassword] = useState(false);
 
   const [surname, setSurname] = useState(userInfos.surname);
   const [username, setUsername] = useState(userInfos.username);
@@ -51,10 +64,10 @@ export const EditUserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //if (!isValidPassword) {
-    // dispatch(SET_ERROR("Password must be at least 6 character"));
-    //return;
-    //}
+    if (!isValidPassword) {
+      // dispatch(SET_ERROR("Password must be at least 6 character"));
+      return;
+    }
 
     if (!isValidEmail) {
       // dispatch(SET_ERROR("Please provide a valid email"));
@@ -93,14 +106,14 @@ export const EditUserForm = () => {
     }
   }, [email]);
 
-  // useEffect(() => {
-  //   const validation = PWD_REGEX.test(password);
-  //   if (validation && password) {
-  //     setIsValidPassword(true);
-  //   } else {
-  //     setIsValidPassword(false);
-  //   }
-  // }, [password]);
+  useEffect(() => {
+    const validation = PWD_REGEX.test(password);
+    if (validation && password) {
+      setIsValidPassword(true);
+    } else {
+      setIsValidPassword(false);
+    }
+  }, [password]);
 
   // useEffect(() => {
   //   if (error) {
@@ -168,20 +181,25 @@ export const EditUserForm = () => {
           }}
         />
       </label>
-
-      {/* author checkbox  */}
-      <label className="flex  items-end justify-between">
-        <span>Are you an author? </span>
+      {/* password */}
+      <label className={styles.ms_label}>
+        <span>password: </span>
         <input
-          type="checkbox"
-          checked={isAuthor}
-          onChange={() => {
-            setIsAuthor((prevState) => !prevState);
+          type="password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
           }}
         />
+        <div className={!isValidPassword && password ? "block mt-2" : "hidden"}>
+          <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" />
+          <span>
+            Password must be at least 6 characters (letters, numbers or simbols)
+          </span>
+        </div>
       </label>
       {/* profilePicture  */}
-      <label className="flex flex-col space-y-2">
+      <label className="flex items-center justify-between  space-x-3">
         <span>profile picture: </span>
         <input
           type="file"
@@ -190,13 +208,29 @@ export const EditUserForm = () => {
           }}
         />
       </label>
+      {/* author checkbox  */}
+      <label className="flex items-center justify-end  space-x-3">
+        <span>Are you an author? </span>
+        <input
+          type="checkbox"
+          value={isAuthor}
+          onChange={(e) => {
+            setIsAuthor((prevState) => !prevState);
+          }}
+        />
+      </label>
+
       <div className="col-span-2 flex items-center  justify-end space-x-5 mt-2">
         <TheButton
           disabled={
-            !name || !surname || !username || !isValidEmail || !birthDate
+            !name ||
+            !surname ||
+            !username ||
+            !isValidEmail ||
+            !isValidPassword ||
+            !birthDate
           }
-          label="Save"
-          icon={faSave}
+          label="Register"
         />
       </div>
 
