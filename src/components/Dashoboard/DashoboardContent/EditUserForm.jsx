@@ -16,12 +16,6 @@ import { TheBadge } from "../../UI/TheBadge";
 
 // * Import Redux
 import { useDispatch, useSelector } from "react-redux";
-// import {
-//   SET_ERROR,
-//   authStatus,
-//   authErrorBatch,
-//   SET_IS_LOADING,
-// } from "../../store/slicers/authSlice";
 import { userInfosBatch } from "../../../store/slicers/authSlice";
 
 // * Import FontAwasome
@@ -37,8 +31,6 @@ export const EditUserForm = () => {
 
   // redux
   const dispatch = useDispatch();
-  // const isLoading = useSelector(authStatus);
-  // const error = useSelector(authErrorBatch);
   const userInfos = useSelector(userInfosBatch);
 
   // regex email e password
