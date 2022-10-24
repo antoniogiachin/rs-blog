@@ -1,5 +1,5 @@
 // * Imports React
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 // * Import React Router
 import { useNavigate } from "react-router-dom";
@@ -62,16 +62,41 @@ export const RegisterForm = ({ changeFormType }) => {
   const [isAuthor, setIsAuthor] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
 
+  const subtractYears = useCallback((numOfYears, date = new Date()) => {
+    date.setFullYear(date.getFullYear() - numOfYears);
+    return date;
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const minYear = subtractYears(100);
+
+    if (new Date(birthDate) < minYear) {
+      setBirthDate("");
+      dispatch(
+        SET_ERROR({
+          status: 400,
+          message: "Invalid date! (Or maybe you're to old :(  !)",
+        })
+      );
+      return;
+    }
+
     if (!isValidPassword) {
-      dispatch(SET_ERROR("Password must be at least 6 character"));
+      dispatch(
+        SET_ERROR({
+          status: 400,
+          message: "Password must be at least 6 character",
+        })
+      );
       return;
     }
 
     if (!isValidEmail) {
-      dispatch(SET_ERROR("Please provide a valid email"));
+      dispatch(
+        SET_ERROR({ status: 400, message: "Please provide a valid email" })
+      );
       return;
     }
 
@@ -146,7 +171,7 @@ export const RegisterForm = ({ changeFormType }) => {
   useEffect(() => {
     if (error) {
       setTimeout(() => {
-        dispatch(SET_ERROR(null));
+        dispatch(RESET_ERROR());
       }, 5000);
     }
   }, [error]);
