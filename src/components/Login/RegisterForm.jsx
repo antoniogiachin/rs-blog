@@ -71,13 +71,19 @@ export const RegisterForm = ({ changeFormType }) => {
     e.preventDefault();
 
     const minYear = subtractYears(100);
+    const ratedR = subtractYears(18);
 
-    if (new Date(birthDate) < minYear) {
+    if (
+      new Date(birthDate) < minYear ||
+      new Date(birthDate) > new Date() ||
+      new Date(birthDate) > ratedR
+    ) {
       setBirthDate("");
       dispatch(
         SET_ERROR({
           status: 400,
-          message: "Invalid date! (Or maybe you're to old :(  !)",
+          message:
+            "Invalid date! (You should be born, not dead and also an adult!)",
         })
       );
       return;
