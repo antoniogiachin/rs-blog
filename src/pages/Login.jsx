@@ -16,7 +16,7 @@ export const Login = () => {
       <h1 className="uppercase text-xl">{isLogin ? "Login" : "Register"}</h1>
       <div
         className={`${
-          isLogin ? "w-1/3" : "w-full"
+          isLogin ? "w-full md:w-1/3" : "w-full"
         } p-5 border rounded-md border-slate-800 shadow-lg bg-purple-800 text-slate-300`}
       >
         {isLogin && (

@@ -183,7 +183,10 @@ export const RegisterForm = ({ changeFormType }) => {
   }, [error]);
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4 grid-cols-2">
+    <form
+      onSubmit={handleSubmit}
+      className="grid gap-4 grid-cols-1 px-2 md:px-0 md:grid-cols-2"
+    >
       {/* name  */}
       <label className={styles.ms_label}>
         <span>name: </span>
@@ -279,7 +282,7 @@ export const RegisterForm = ({ changeFormType }) => {
         />
       </label>
 
-      <div className="col-span-2 flex items-center  justify-end space-x-5 mt-2">
+      <div className="md:col-span-2 flex items-center  justify-end space-x-5 mt-2">
         <span
           onClick={changeFormType}
           className="hover:underline cursor-pointer text-xs"
