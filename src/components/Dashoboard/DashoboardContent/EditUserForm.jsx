@@ -15,6 +15,7 @@ import { TheBadge } from "../../UI/TheBadge";
 import { useDispatch, useSelector } from "react-redux";
 import { userInfosBatch } from "../../../store/slicers/authSlice";
 import { SET_ERROR, errorMessage } from "../../../store/slicers/errorSlice";
+import { useUpdateUserMutation } from "../../../api/modules/userApiSlice";
 
 // * Import FontAwasome
 import { faSave } from "@fortawesome/free-solid-svg-icons";
@@ -30,6 +31,9 @@ export const EditUserForm = () => {
   const dispatch = useDispatch();
   const userInfos = useSelector(userInfosBatch);
   const error = useSelector(errorMessage);
+
+  // update redux
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
 
   // regex email e password
   const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -51,6 +55,17 @@ export const EditUserForm = () => {
       );
       return;
     }
+
+    const payloadUpdate = {
+      username,
+      email,
+    };
+
+    if (profilePicture) {
+      payloadUpdate.profilePicture = profilePicture;
+    }
+
+    await updateUser({ id: userInfos.id, body: { ...payloadUpdate } });
   };
 
   // al [] focus su nameRef
