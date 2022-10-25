@@ -14,7 +14,18 @@ import { TheBadge } from "../../UI/TheBadge";
 // * Import Redux
 import { useDispatch, useSelector } from "react-redux";
 import { userInfosBatch } from "../../../store/slicers/authSlice";
-import { SET_ERROR, errorMessage } from "../../../store/slicers/errorSlice";
+import {
+  SET_ERROR,
+  RESET_ERROR,
+  errorMessage,
+} from "../../../store/slicers/errorSlice";
+import {
+  SET_TOKEN,
+  SET_USER_INFOS,
+  SET_IS_LOGGED,
+  SET_IS_AUTHOR,
+} from "../../../store/slicers/authSlice";
+import { SET_LOADING } from "../../../store/slicers/loadingSlice";
 import { useUpdateUserMutation } from "../../../api/modules/userApiSlice";
 
 // * Import FontAwasome
@@ -49,6 +60,8 @@ export const EditUserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    dispatch(SET_LOADING(true));
+
     if (!isValidEmail) {
       dispatch(
         SET_ERROR({ status: 400, message: "Please provide a valid email" })
@@ -65,7 +78,36 @@ export const EditUserForm = () => {
       payloadUpdate.profilePicture = profilePicture;
     }
 
-    await updateUser({ id: userInfos.id, body: { ...payloadUpdate } });
+    const form = new FormData();
+    for (const [key, val] of Object.entries(payloadUpdate)) {
+      if (key === "profilePicture") {
+        form.append(key, val, val.name);
+      } else {
+        form.append(key, val);
+      }
+    }
+
+    try {
+      const { data, success, accessToken } = await updateUser({
+        id: userInfos.id,
+        body: form,
+      }).unwrap();
+
+      dispatch(SET_IS_LOGGED(success));
+      dispatch(SET_IS_AUTHOR(data.isAuthor));
+      dispatch(SET_USER_INFOS({ ...data }));
+      dispatch(SET_TOKEN(accessToken));
+      dispatch(SET_LOADING(false));
+    } catch (err) {
+      dispatch(SET_LOADING(false));
+
+      dispatch(
+        SET_ERROR({ status: err.data.status, message: err.data.message })
+      );
+      setTimeout(() => {
+        dispatch(RESET_ERROR({}));
+      }, 5000);
+    }
   };
 
   // al [] focus su nameRef
@@ -85,7 +127,7 @@ export const EditUserForm = () => {
   useEffect(() => {
     if (error) {
       setTimeout(() => {
-        dispatch(SET_ERROR(null));
+        dispatch(RESET_ERROR());
       }, 5000);
     }
   }, [error]);
@@ -133,6 +175,7 @@ export const EditUserForm = () => {
           label="Save"
           icon={faSave}
           type="warning"
+          isLoading={isLoading}
         />
       </div>
 

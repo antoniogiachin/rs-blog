@@ -37,6 +37,7 @@ import {
   useGetAllPostsQuery,
   useLazyGetAllUserPostsQuery,
 } from "./api/modules/postApiSlice";
+import { isLoadingState } from "./store/slicers/loadingSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -55,12 +56,13 @@ function App() {
   const userInfos = useSelector(userInfosBatch);
 
   // selectors posts redux
-  // const posts = useSelector(selectAllPosts);
   const postsStatus = useSelector(selectPostsStatus);
   const { isLoading: isLoadingPosts, error } = useGetAllPostsQuery(); // se voglio il trigger devo usare il getLazyhook
-  // const postsError = useSelector(selectPostsError);
   const [getAllUserPosts, { isLoading: isLoadingUserPosts }] =
     useLazyGetAllUserPostsQuery();
+
+  // selector loading state redux
+  const isLoadingRedux = useSelector(isLoadingState);
 
   // auth redux query
   const [refresh, { isLoading }] = useRefreshMutation();
@@ -125,7 +127,7 @@ function App() {
   }, [isAuthor, userInfos]);
 
   let content;
-  if (isLoading || isLoadingPosts) {
+  if (isLoading || isLoadingPosts || isLogoutLoading || isLoadingRedux) {
     content = <TheLoader />;
   } else {
     content = (

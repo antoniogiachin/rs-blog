@@ -3,6 +3,7 @@ import { apiSlice } from "../api/apiSlice";
 import authReducer from "./slicers/authSlice";
 import postsReducer from "./slicers/postsSlice";
 import errorReducer from "./slicers/errorSlice";
+import loadingReducer from "./slicers/loadingSLice";
 
 export default configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export default configureStore({
     auth: authReducer,
     posts: postsReducer,
     error: errorReducer,
+    loading: loadingReducer,
   },
   //serve un middleware
   middleware: (getDefaultMiddleware) =>

@@ -17,13 +17,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
     }),
     updateUser: builder.mutation({
       query: (payload) => ({
-        url: `${REGISTER_URL}/${payload.id}`,
+        url: `${REGISTER_URL}/${payload?.id}`,
         method: "PUT",
         body: payload.body,
         headers: {
           "Content-Type": undefined,
         },
       }),
+      invalidatesTags: ["Post"],
     }),
   }),
 });
