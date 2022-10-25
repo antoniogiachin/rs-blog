@@ -12,9 +12,14 @@ export const DashboardUserRecap = () => {
     <div className="p-2 shadow-lg bg-slate-100 rounded grid grid-cols-4 gap-y-3 mt-6">
       <div className="col-span-4 md:col-span-3">
         {userInfos.profilePicture && (
-          <img
-            src={`${import.meta.env.VITE_BASE_URL}/${userInfos.profilePicture}`}
-          />
+          <div className="md:w-1/2 p-10">
+            <img
+              className="rounded-lg object-cover"
+              src={`${import.meta.env.VITE_BASE_URL}/${
+                userInfos.profilePicture
+              }`}
+            />
+          </div>
         )}
         <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <h3 className="text-2xl">Username: {userInfos.username}</h3>
