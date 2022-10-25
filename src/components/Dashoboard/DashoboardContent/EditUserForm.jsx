@@ -51,23 +51,6 @@ export const EditUserForm = () => {
       );
       return;
     }
-
-    // const res = await handleRegister({
-    //   name,
-    //   surname,
-    //   username,
-    //   email,
-    //   password,
-    //   isAuthor,
-    //   birthDate,
-    //   profilePicture,
-    // });
-
-    // if (res && res.success) {
-    //   navigate("/");
-    // } else {
-    //   SET_IS_LOADING(false);
-    // }
   };
 
   // al [] focus su nameRef
@@ -134,14 +117,15 @@ export const EditUserForm = () => {
           disabled={!username || !isValidEmail}
           label="Save"
           icon={faSave}
+          type="warning"
         />
       </div>
 
-      {/* {error && (
+      {error && (
         <div className="col-span-1 col-start-2  mt-2">
           <TheBadge label={error} severity={"danger"} />
         </div>
-      )} */}
+      )}
     </form>
   );
 };
