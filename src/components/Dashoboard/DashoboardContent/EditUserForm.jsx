@@ -34,16 +34,12 @@ export const EditUserForm = () => {
   // regex email e password
   const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-  const nameRef = useRef();
-
-  const [name, setName] = useState(userInfos.name);
+  const usernameRef = useRef();
 
   const [email, setEmail] = useState(userInfos.email);
   const [isValidEmail, setIsValidEmail] = useState(false);
 
-  const [surname, setSurname] = useState(userInfos.surname);
   const [username, setUsername] = useState(userInfos.username);
-  const [birthDate, setBirthDate] = useState(userInfos.birthDate.split("T")[0]);
   const [profilePicture, setProfilePicture] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -76,7 +72,7 @@ export const EditUserForm = () => {
 
   // al [] focus su nameRef
   useEffect(() => {
-    nameRef.current.focus();
+    usernameRef.current.focus();
   }, []);
 
   useEffect(() => {
@@ -98,48 +94,15 @@ export const EditUserForm = () => {
 
   return (
     <form className="grid gap-4 grid-cols-2" onSubmit={handleSubmit}>
-      {/* name  */}
-      <label className={styles.ms_label}>
-        <span>name: </span>
-        <input
-          ref={nameRef}
-          type="text"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
-      </label>
-      {/* surname  */}
-      <label className={styles.ms_label}>
-        <span>surname: </span>
-        <input
-          type="text"
-          value={surname}
-          onChange={(e) => {
-            setSurname(e.target.value);
-          }}
-        />
-      </label>
       {/* username  */}
       <label className={styles.ms_label}>
         <span>username: </span>
         <input
+          ref={usernameRef}
           type="text"
           value={username}
           onChange={(e) => {
             setUsername(e.target.value);
-          }}
-        />
-      </label>
-      {/* birthdate  */}
-      <label className={styles.ms_label}>
-        <span>birth date: </span>
-        <input
-          type="date"
-          value={birthDate}
-          onChange={(e) => {
-            setBirthDate(e.target.value);
           }}
         />
       </label>
@@ -168,9 +131,7 @@ export const EditUserForm = () => {
 
       <div className="col-span-2 flex items-center  justify-end space-x-5 mt-2">
         <TheButton
-          disabled={
-            !name || !surname || !username || !isValidEmail || !birthDate
-          }
+          disabled={!username || !isValidEmail}
           label="Save"
           icon={faSave}
         />
