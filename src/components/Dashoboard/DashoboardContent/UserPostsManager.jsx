@@ -1,7 +1,9 @@
 // * Import Redux
 import { useSelector } from "react-redux";
 import { userPostsBatch } from "../../../store/slicers/authSlice";
+// * Import Components
 import { DashboardPostContainer } from "../DashboardUtilities/DashboardPostContainer";
+import { DashboardPostForm } from "../DashboardUtilities/DashboardPostForm";
 // * Import FontAwasome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSadTear } from "@fortawesome/free-solid-svg-icons";
@@ -20,13 +22,16 @@ export const UserPostsManager = ({ extra }) => {
   } else {
     postRecap = (
       <div className="flex space-x-2 items-center justify-center">
-        <FontAwesomeIcon className="text-purple-800 fa-2x" icon={faFaceSadTear} />
+        <FontAwesomeIcon
+          className="text-purple-800 fa-2x"
+          icon={faFaceSadTear}
+        />
         <p className="font-bold text-xl text-center">No posts</p>
       </div>
     );
   }
 
-  let postAdd = <p>Qui Extra</p>;
+  let postAdd = <DashboardPostForm />;
 
   return (
     <div className="grid grid-cols-1 gap-2">
