@@ -6,6 +6,7 @@ module.exports = {
       fontFamily: {
         Nunito: ["Nunito", "sans-serif"],
         Lobster: ["Lobster", "cursive"],
+        Times: ["Playfair Display", "serif"],
       },
       display: ["group-hover"],
     },
