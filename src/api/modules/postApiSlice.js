@@ -38,6 +38,9 @@ export const postApiSlice = apiSlice.injectEndpoints({
         }
       },
     }),
+    getPost: builder.query({
+      query: (slug) => `${ALL_POSTS_URL}?slug=${slug}`,
+    }),
     saveNewPost: builder.mutation({
       query: (payload) => ({
         url: ALL_POSTS_URL,
@@ -55,5 +58,6 @@ export const postApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetAllPostsQuery,
   useLazyGetAllUserPostsQuery,
+  useLazyGetPostQuery,
   useSaveNewPostMutation,
 } = postApiSlice;
