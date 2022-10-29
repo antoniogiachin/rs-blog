@@ -184,7 +184,14 @@ export const DashboardPostForm = () => {
       {/* media  */}
       <label className={styles.ms_label}>
         <span>files: </span>
-        <input type="file" onChange={handleFileUpload} />
+        <input
+          type="file"
+          onChange={handleFileUpload}
+          disabled={postMedia.length === 3}
+        />
+        {postMedia.length > 3 && (
+          <TheBadge label={"Max three files for post!"} severity={"danger"} />
+        )}
         <p>File uploaded: {postMedia.length} files</p>
         <div className="mt-2">{fileUploadedRender}</div>
       </label>
@@ -201,7 +208,7 @@ export const DashboardPostForm = () => {
 
       <div className="col-span-1 flex items-center  justify-end space-x-5 mt-2">
         <TheButton
-          disabled={!title || !content || !tags.length}
+          disabled={!title || !content || !tags.length || postMedia.length > 3}
           label="Save"
           icon={faSave}
           type="warning"
