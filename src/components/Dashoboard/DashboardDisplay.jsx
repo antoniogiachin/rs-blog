@@ -18,9 +18,6 @@ export const DashboardDisplay = ({ isChanged, toShow, resetToShow }) => {
     setExtra((prevExtra) => !prevExtra);
   };
 
-  const handleAddPost = () => {
-    console.log("add post");
-  };
 
   let extraButton;
   if (toShow.posts) {

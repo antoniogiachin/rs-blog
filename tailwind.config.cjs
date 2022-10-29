@@ -6,7 +6,10 @@ module.exports = {
       fontFamily: {
         Nunito: ["Nunito", "sans-serif"],
       },
+      display: ["group-hover"],
     },
   },
   plugins: [],
 };
+
+//https://fontsource.org/fonts/lobster

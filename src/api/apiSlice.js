@@ -41,7 +41,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     let refreshedToken = await baseQuery(REFRESH_URL, api, extraOptions);
     //se possibile refresharlo allora refrsh token non scaduto
     if (refreshedToken.data) {
-      console.log(refreshedToken);
       api.dispatch(SET_IS_LOGGED(refreshedToken.data.success));
       api.dispatch(SET_IS_AUTHOR(refreshedToken.data.user.isAuthor));
       api.dispatch(SET_USER_INFOS({ ...refreshedToken.data.user }));

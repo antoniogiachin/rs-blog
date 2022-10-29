@@ -15,7 +15,7 @@ export const UserPostsManager = ({ extra }) => {
   let postRecap;
   if (userPosts.length) {
     postRecap = userPosts.map((post) => (
-      <div key={post.id}>
+      <div key={post.title}>
         <DashboardPostContainer post={post} />
       </div>
     ));
