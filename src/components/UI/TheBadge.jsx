@@ -8,6 +8,8 @@ export const TheBadge = ({ label, severity, shape, icon }) => {
     switch (severity) {
       case "success":
         return "bg-green-400 text-gray-800";
+      case "info":
+        return "bg-blue-400 text-gray-800";
       case "warning":
         return "bg-yellow-400 text-gray-800";
       case "danger":

@@ -32,14 +32,32 @@ export const postApiSlice = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
 
-          dispatch(SET_USER_POSTS([...data.data]));
+          dispatch(SET_USER_POSTS([data.data]));
         } catch (err) {
           console.log(err);
         }
       },
     }),
+    getPost: builder.query({
+      query: (slug) => `${ALL_POSTS_URL}?slug=${slug}`,
+    }),
+    saveNewPost: builder.mutation({
+      query: (payload) => ({
+        url: ALL_POSTS_URL,
+        method: "POST",
+        body: payload,
+        headers: {
+          "Content-Type": undefined,
+        },
+      }),
+      invalidatesTags: ["Post"],
+    }),
   }),
 });
 
-export const { useGetAllPostsQuery, useLazyGetAllUserPostsQuery } =
-  postApiSlice;
+export const {
+  useGetAllPostsQuery,
+  useLazyGetAllUserPostsQuery,
+  useLazyGetPostQuery,
+  useSaveNewPostMutation,
+} = postApiSlice;

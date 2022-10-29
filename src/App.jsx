@@ -38,6 +38,7 @@ import {
   useLazyGetAllUserPostsQuery,
 } from "./api/modules/postApiSlice";
 import { isLoadingState } from "./store/slicers/loadingSlice";
+import { useGetAllTagsQuery } from "./api/modules/tagsApiSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -60,6 +61,9 @@ function App() {
   const { isLoading: isLoadingPosts, error } = useGetAllPostsQuery(); // se voglio il trigger devo usare il getLazyhook
   const [getAllUserPosts, { isLoading: isLoadingUserPosts }] =
     useLazyGetAllUserPostsQuery();
+
+  // tags redux hanlder
+  const { isLoading: isLoadingTags } = useGetAllTagsQuery();
 
   // selector loading state redux
   const isLoadingRedux = useSelector(isLoadingState);
@@ -127,7 +131,13 @@ function App() {
   }, [isAuthor, userInfos]);
 
   let content;
-  if (isLoading || isLoadingPosts || isLogoutLoading || isLoadingRedux) {
+  if (
+    isLoading ||
+    isLoadingPosts ||
+    isLoadingTags ||
+    isLogoutLoading ||
+    isLoadingRedux
+  ) {
     content = <TheLoader />;
   } else {
     content = (
