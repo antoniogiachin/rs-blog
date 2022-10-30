@@ -10,7 +10,14 @@ export const TheContainer = ({ output, mode, children }) => {
   let tagsRender;
   if (mode === "post") {
     tagsRender = output.tags.map((tag) => (
-      <TheBadge key={tag._id} severity="info" label={tag.name} />
+      <TheBadge
+        key={tag._id}
+        severity="info"
+        label={tag.name}
+        functionToExecute={() => {
+          navigate(`/tags/${tag.name}`);
+        }}
+      />
     ));
   }
 

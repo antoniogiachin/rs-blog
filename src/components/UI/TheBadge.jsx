@@ -3,7 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // * Imports React
 import { useMemo } from "react";
 
-export const TheBadge = ({ label, severity, shape, icon }) => {
+export const TheBadge = ({
+  label,
+  severity,
+  shape,
+  icon,
+  functionToExecute,
+}) => {
   const severityColor = useMemo(() => {
     switch (severity) {
       case "success":
@@ -29,7 +35,12 @@ export const TheBadge = ({ label, severity, shape, icon }) => {
   }, [severity]);
 
   return (
-    <div className={`p-2 ${severityColor} ${shapeClass} shadow-lg`}>
+    <div
+      onClick={functionToExecute}
+      className={`p-2 ${severityColor} ${shapeClass} ${
+        functionToExecute && "cursor-pointer"
+      } shadow-lg`}
+    >
       {icon && <FontAwesomeIcon icon={icon} />}
       {label}
     </div>
