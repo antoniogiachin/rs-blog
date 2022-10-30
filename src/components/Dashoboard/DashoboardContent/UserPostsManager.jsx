@@ -2,21 +2,44 @@
 import { useSelector } from "react-redux";
 import { userPostsBatch } from "../../../store/slicers/authSlice";
 // * Import Components
-import { DashboardPostContainer } from "../DashboardUtilities/DashboardPostContainer";
+import { TheButton } from "../../UI/TheButton";
+import { TheContainer } from "../../UI/TheContainer";
 import { DashboardPostForm } from "../DashboardUtilities/DashboardPostForm";
 // * Import FontAwasome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSadTear } from "@fortawesome/free-solid-svg-icons";
+import { faPlane } from "@fortawesome/free-solid-svg-icons";
+// * Import Router
+import { Link } from "react-router-dom";
 
 export const UserPostsManager = ({ extra }) => {
   // redux posts
   const userPosts = useSelector(userPostsBatch);
 
+  const handlePostNavigate = (slug) => {
+    navigate(`/post/${slug}`);
+  };
+
   let postRecap;
   if (userPosts.length) {
     postRecap = userPosts.map((post) => (
       <div key={post.title}>
-        <DashboardPostContainer post={post} />
+        <TheContainer
+          output={post}
+          mode="post"
+          children={
+            <Link to={`/post/${post.slug}`}>
+              <TheButton
+                icon={faPlane}
+                type="success"
+                label={`Go to ${post.title}`}
+                functionToExecute={() => {
+                  handlePostNavigate(post.slug);
+                }}
+              />
+            </Link>
+          }
+        />
       </div>
     ));
   } else {
