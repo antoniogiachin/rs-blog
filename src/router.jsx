@@ -5,11 +5,13 @@ import App from "./App";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
+import { Post } from "./pages/Post";
+import { Tag } from "./pages/Tag";
+import { TagPostList } from "./components/Tag/TagPostList";
 // ROUTE PROTECTOR
 import { RouteProtector } from "./pages/RouteProtector";
 // ERROR PAGE
 import { ErrorPage } from "./pages/ErrorPage";
-import { Post } from "./pages/Post";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +30,16 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <RouteProtector toRender={<Dashboard />} />,
+      },
+      {
+        path: "/tags",
+        element: <Tag />,
+        children: [
+          {
+            path: ":name",
+            element: <TagPostList />,
+          },
+        ],
       },
       {
         path: "post/:slug",
