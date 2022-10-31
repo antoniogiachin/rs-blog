@@ -8,7 +8,7 @@ export const TagPostList = () => {
   const navigate = useNavigate();
 
   return (
-    <article>
+    <article className="mt-4">
       <div className="flex justify-end">
         <FontAwesomeIcon
           onClick={() => {
