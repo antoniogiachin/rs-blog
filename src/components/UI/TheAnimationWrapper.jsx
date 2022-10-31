@@ -21,6 +21,7 @@ export const TheAnimationWrapper = ({ children }) => {
 
   return (
     <motion.div
+      key={null} // re-render animation
       initial="initial"
       animate="in"
       variants={pageVariants}

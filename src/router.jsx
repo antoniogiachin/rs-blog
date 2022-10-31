@@ -12,6 +12,7 @@ import { TagPostList } from "./components/Tag/TagPostList";
 import { RouteProtector } from "./pages/RouteProtector";
 // ERROR PAGE
 import { ErrorPage } from "./pages/ErrorPage";
+import { TheAnimationWrapper } from "./components/UI/TheAnimationWrapper";
 
 export const router = createBrowserRouter([
   {
@@ -21,19 +22,23 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: <TheAnimationWrapper children={<Home />} />,
       },
       {
         path: "/login",
-        element: <Login />,
+        element: <TheAnimationWrapper children={<Login />} />,
       },
       {
         path: "/dashboard",
-        element: <RouteProtector toRender={<Dashboard />} />,
+        element: (
+          <RouteProtector
+            toRender={<TheAnimationWrapper children={<Dashboard />} />}
+          />
+        ),
       },
       {
         path: "/tags",
-        element: <Tag />,
+        element: <TheAnimationWrapper children={<Tag />} />,
         children: [
           {
             path: ":name",
@@ -43,7 +48,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "post/:slug",
-        element: <Post />,
+        element: <TheAnimationWrapper children={<Post />} />,
         loader: async ({ params }) => {
           try {
             const res = await fetch(
